@@ -1,0 +1,29 @@
+{
+  "name": "travel-trail-main",
+  "version": "1.0.0",
+  "description": "Central repository for my travel trail Node.js app built using Express, MongoDB, Mongoose, etc. Server-side rendered application.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^7.4.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.46.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.28.0",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-react": "^7.33.1",
+    "prettier": "^3.0.1"
+  }
+}
