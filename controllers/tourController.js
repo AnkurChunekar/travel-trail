@@ -1,11 +1,33 @@
 const Tour = require("../models/tourModel");
 
+const EXCLUDE_QUERY_PARAMS = ["limit", "sort", "page", "projection"];
+const QUERY_OPERATORS_REGEX = /\b(gte|gt|lte|lt)\b/g;
+
 exports.getAllTours = async (req, res) => {
   try {
-    // Build Query
-    const query = Tour.find(req.query);
+    // REFER TO docs/advanced-filtering.md FOR DOCUMENTATION
 
-    // alternate
+    let queryObj = { ...req.query };
+
+    EXCLUDE_QUERY_PARAMS.forEach((item) => delete queryObj[item]);
+
+    // QUERYING
+    queryObj = JSON.parse(
+      JSON.stringify(queryObj).replace(
+        QUERY_OPERATORS_REGEX,
+        (matched) => `$${matched}`
+      )
+    );
+
+    // Build Query
+    const query = Tour.find(queryObj);
+
+    // SORTING
+    if (req.query.sort) {
+      query.sort(req.query.sort.replaceAll(",", " "));
+    } else query.sort("-createdAt");
+
+    // alternate for normal query
     // const query = Tour.find({})
     //   .where("duration")
     //   .equals(req.query.duration)
@@ -17,12 +39,14 @@ exports.getAllTours = async (req, res) => {
 
     res.json({
       results: tours.length,
+      // sortStr: req.query.sort.replaceAll(",", " "),
       data: {
         tours
       },
-      query: req.query
+      query: queryObj
     });
   } catch (error) {
+    console.log(error);
     res.status(400).json({
       error: "Something went wrong"
     });
