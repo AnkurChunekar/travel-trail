@@ -2,12 +2,25 @@ const Tour = require("../models/tourModel");
 
 exports.getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.find({});
+    // Build Query
+    const query = Tour.find(req.query);
+
+    // alternate
+    // const query = Tour.find({})
+    //   .where("duration")
+    //   .equals(req.query.duration)
+    //   .where("difficulty")
+    //   .equals(req.query.difficulty);
+
+    // Execute Query
+    const tours = await query;
+
     res.json({
+      results: tours.length,
       data: {
         tours
       },
-      results: tours.length
+      query: req.query
     });
   } catch (error) {
     res.status(400).json({
@@ -18,12 +31,8 @@ exports.getAllTours = async (req, res) => {
 
 exports.addNewTour = async (req, res) => {
   try {
-    const { name, rating, price } = req.body;
-    const result = await Tour.create({
-      name,
-      rating,
-      price
-    });
+    const result = await Tour.create(req.body);
+    // .create can take array of multiple objects also
 
     /*  
 
