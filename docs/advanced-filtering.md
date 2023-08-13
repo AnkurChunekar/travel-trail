@@ -29,7 +29,7 @@ Once it gets parsed you'll see something like below in the req.query in the get 
 // we can easily write simple piece of code to do this operation
 ```
 
-## 1. Sorting
+## 2. Sorting
 
 For sorting with specific field ascending or descending we can chain sort method to the returned query.
 [Link to mongoose's Query.prototype.sort() docs](<https://mongoosejs.com/docs/api/query.html#Query.prototype.sort()>)
@@ -55,4 +55,36 @@ or
 here we will sort based on ratings average and in descending order
 
 https://www.example.com/api/v1/tours?price[gte]=1000&sort=price,-ratingsAverage
+```
+
+## 3. Projection
+
+Basically selecting/removing the properties that we need or do not need
+
+```js
+// include a and b, exclude other fields
+query.select("a b");
+// Equivalent syntaxes:
+query.select(["a", "b"]);
+query.select({ a: 1, b: 1 });
+
+// exclude c and d, include other fields
+query.select("-c -d");
+```
+
+An example for how to add projection params
+
+```
+https://www.example.com/api/v1/tours?projection=name,difficulty,price
+
+just exclude name property
+
+https://www.example.com/api/v1/tours?projection=-name
+
+Invalid query
+
+https://www.example.com/api/v1/tours?projection=-name,difficulty
+
+will result in an error: Cannot do exclusion on field name in inclusion projection
+
 ```
