@@ -11,7 +11,7 @@ exports.getAllTours = async (req, res) => {
 
     EXCLUDE_QUERY_PARAMS.forEach((item) => delete queryObj[item]);
 
-    // QUERYING
+    // 1. QUERYING
     queryObj = JSON.parse(
       JSON.stringify(queryObj).replace(
         QUERY_OPERATORS_REGEX,
@@ -22,10 +22,15 @@ exports.getAllTours = async (req, res) => {
     // Build Query
     const query = Tour.find(queryObj);
 
-    // SORTING
+    // 2. SORTING
     if (req.query.sort) {
       query.sort(req.query.sort.replaceAll(",", " "));
     } else query.sort("-createdAt");
+
+    // 3. PROJECTTION
+    if (req.query.projection) {
+      query.select(req.query.projection.split(","));
+    }
 
     // alternate for normal query
     // const query = Tour.find({})
@@ -48,7 +53,8 @@ exports.getAllTours = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(400).json({
-      error: "Something went wrong"
+      error: "Something went wrong",
+      message: error.message
     });
   }
 };
