@@ -32,6 +32,21 @@ exports.getAllTours = async (req, res) => {
       query.select(req.query.projection.split(","));
     }
 
+    // 4. Pagination
+    // by default we will keep 100 as limit, why? think if there are million records then?
+    let page = Number(req.query.page) || 1;
+    if (page < 1) page = 1;
+    const limit = Math.abs(Number(req.query.limit)) || 100;
+    const skip = limit * (page - 1);
+
+    query.skip(skip).limit(limit);
+
+    // check if requested page no. is more than existing page count
+    if (req.query.page) {
+      const numOfTours = await Tour.countDocuments();
+      if (skip >= numOfTours) throw new Error("Requested page does not exist.");
+    }
+
     // alternate for normal query
     // const query = Tour.find({})
     //   .where("duration")
