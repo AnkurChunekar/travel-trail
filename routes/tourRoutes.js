@@ -6,6 +6,12 @@ const tourController = require("../controllers/tourController");
 
 const router = express.Router();
 
+router.get(
+  "/top-five-affordable",
+  tourController.getTop5AffordableQuery,
+  tourController.getAllTours
+);
+
 router
   .route("/")
   .get(tourController.getAllTours)
@@ -21,4 +27,3 @@ router
   .delete(tourController.deleteTour);
 
 module.exports = router;
-

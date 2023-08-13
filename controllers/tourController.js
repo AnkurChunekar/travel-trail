@@ -3,6 +3,16 @@ const Tour = require("../models/tourModel");
 const EXCLUDE_QUERY_PARAMS = ["limit", "sort", "page", "projection"];
 const QUERY_OPERATORS_REGEX = /\b(gte|gt|lte|lt)\b/g;
 
+exports.getTop5AffordableQuery = async (req, res, next) => {
+  req.query = {
+    page: 1,
+    limit: 5,
+    sort: "price,-ratingsAverage",
+    projection: "_id,name,price,ratingsAverage,description,difficuilty"
+  };
+  next();
+};
+
 exports.getAllTours = async (req, res) => {
   try {
     // REFER TO docs/advanced-filtering.md FOR DOCUMENTATION
