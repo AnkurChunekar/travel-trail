@@ -88,3 +88,13 @@ https://www.example.com/api/v1/tours?projection=-name,difficulty
 will result in an error: Cannot do exclusion on field name in inclusion projection
 
 ```
+
+## 4. Pagination
+
+`page` and `limit` are the two parameters that can be used for pagination, `page` is the current page number and `limit` is the maximum number of docs to receive. default: page=1,limit=100
+
+An example for how to add pagination params
+
+```
+http://localhost:3000/api/v1/tours?page=3&limit=3
+```
