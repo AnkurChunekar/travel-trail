@@ -13,49 +13,71 @@ exports.getTop5AffordableQuery = async (req, res, next) => {
   next();
 };
 
-exports.getAllTours = async (req, res) => {
-  try {
-    // REFER TO docs/advanced-filtering.md FOR DOCUMENTATION
+class APIQueryFeatures {
+  constructor(query, queryObj) {
+    this.query = query;
+    this.queryObj = queryObj;
+  }
 
-    let queryObj = { ...req.query };
+  sanitizeQueryObj() {
+    let result = { ...this.queryObj };
 
-    EXCLUDE_QUERY_PARAMS.forEach((item) => delete queryObj[item]);
+    EXCLUDE_QUERY_PARAMS.forEach((item) => delete result[item]);
 
     // 1. QUERYING
-    queryObj = JSON.parse(
-      JSON.stringify(queryObj).replace(
+    result = JSON.parse(
+      JSON.stringify(result).replace(
         QUERY_OPERATORS_REGEX,
         (matched) => `$${matched}`
       )
     );
 
-    // Build Query
-    const query = Tour.find(queryObj);
+    this.query.find(result);
+    return this;
+  }
 
-    // 2. SORTING
-    if (req.query.sort) {
-      query.sort(req.query.sort.replaceAll(",", " "));
-    } else query.sort("-createdAt");
+  sort() {
+    if (this.queryObj.sort) {
+      this.query.sort(this.queryObj.sort.replaceAll(",", " "));
+    } else this.query.sort("-createdAt");
+    return this;
+  }
 
-    // 3. PROJECTTION
-    if (req.query.projection) {
-      query.select(req.query.projection.split(","));
+  project() {
+    if (this.queryObj.projection) {
+      this.query.select(this.queryObj.projection.split(","));
     }
+    return this;
+  }
 
-    // 4. Pagination
+  paginate() {
     // by default we will keep 100 as limit, why? think if there are million records then?
-    let page = Number(req.query.page) || 1;
+    let page = Number(this.queryObj.page) || 1;
     if (page < 1) page = 1;
-    const limit = Math.abs(Number(req.query.limit)) || 100;
+    const limit = Math.abs(Number(this.queryObj.limit)) || 100;
     const skip = limit * (page - 1);
 
-    query.skip(skip).limit(limit);
+    this.query.skip(skip).limit(limit);
+    return this;
+  }
+}
 
-    // check if requested page no. is more than existing page count
-    if (req.query.page) {
-      const numOfTours = await Tour.countDocuments();
-      if (skip >= numOfTours) throw new Error("Requested page does not exist.");
-    }
+exports.getAllTours = async (req, res) => {
+  try {
+    // REFER TO docs/advanced-filtering.md FOR DOCUMENTATION
+
+    // Build Query
+    const features = new APIQueryFeatures(Tour.find(), req.query)
+      .sanitizeQueryObj()
+      .sort()
+      .paginate()
+      .project();
+
+    // // check if requested page no. is more than existing page count
+    // if (req.query.page) {
+    //   const numOfTours = await Tour.countDocuments();
+    //   if (skip >= numOfTours) throw new Error("Requested page does not exist.");
+    // }
 
     // alternate for normal query
     // const query = Tour.find({})
@@ -65,15 +87,13 @@ exports.getAllTours = async (req, res) => {
     //   .equals(req.query.difficulty);
 
     // Execute Query
-    const tours = await query;
+    const tours = await features.query;
 
     res.json({
       results: tours.length,
-      // sortStr: req.query.sort.replaceAll(",", " "),
       data: {
         tours
-      },
-      query: queryObj
+      }
     });
   } catch (error) {
     console.log(error);
