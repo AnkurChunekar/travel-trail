@@ -73,12 +73,6 @@ exports.getAllTours = async (req, res) => {
       .paginate()
       .project();
 
-    // // check if requested page no. is more than existing page count
-    // if (req.query.page) {
-    //   const numOfTours = await Tour.countDocuments();
-    //   if (skip >= numOfTours) throw new Error("Requested page does not exist.");
-    // }
-
     // alternate for normal query
     // const query = Tour.find({})
     //   .where("duration")
