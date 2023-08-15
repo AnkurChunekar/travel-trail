@@ -128,3 +128,47 @@ exports.deleteTour = async (req, res) => {
     });
   }
 };
+
+exports.getTourStats = async (req, res) => {
+  try {
+    const stats = await Tour.aggregate([
+      {
+        $match: {
+          ratingsAverage: { $gte: 4.5 }
+        }
+      },
+      {
+        $group: {
+          _id: "$difficulty", // null if we want to group it to single document
+          // _id: { $toUpper: "$difficulty" } // converts the obtained string to uppercase
+          avgRating: { $avg: "$ratingsAverage" },
+          avgPrice: { $avg: { $round: "$price" } },
+          minPrice: { $min: "$price" },
+          maxPrice: { $max: "$price" },
+          ratingsCount: { $sum: "$ratingsQuantity" },
+          toursCount: { $sum: 1 } // why 1? for each doc we will add 1 to the toursCount property
+        }
+      },
+      {
+        $sort: { minPrice: 1 }
+      }
+      // we can rewrite stages again if we want
+      // {
+      //   $match: { _id: { $ne: "easy" } }
+      // }
+    ]);
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        stats
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      error: "Something went wrong",
+      message: error.message
+    });
+  }
+};
