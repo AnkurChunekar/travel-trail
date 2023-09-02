@@ -18,6 +18,9 @@ router.get(
 );
 
 router.route("/stats").get(tourController.getTourStats);
+router
+  .route("/monthly-tour-analytics")
+  .get(tourController.getMonthlyTourAnalytics);
 
 // patch -> update some fields in original object
 // put -> original object will be completely replaced by new one
