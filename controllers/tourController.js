@@ -172,3 +172,64 @@ exports.getTourStats = async (req, res) => {
     });
   }
 };
+
+// eslint-disable-next-line consistent-return
+exports.getMonthlyTourAnalytics = async (req, res) => {
+  try {
+    const year = Number(req.query.year);
+
+    if (!year) {
+      return res.status(400).json({
+        error: "Year is required!",
+        message: "Year is required!"
+      });
+    }
+
+    const stats = await Tour.aggregate([
+      { $unwind: "$startDates" },
+      {
+        $match: {
+          startDates: {
+            $gte: new Date(`${year}-01-01`),
+            $lt: new Date(`${year + 1}-01-01`)
+          }
+        }
+      },
+      {
+        $group: {
+          _id: { $month: "$startDates" },
+          numberOfToursStarting: { $sum: 1 },
+          tours: {
+            $push: "$name"
+          }
+        }
+      },
+      { $addFields: { month: "$_id" } },
+      { $project: { _id: 0 } },
+      {
+        $sort: { numberOfToursStarting: -1 }
+      },
+      { $limit: 3 } // limiting it to only top 3
+    ]);
+
+    if (stats.length < 1) {
+      return res.status(404).json({
+        error: "No records found for provided year.",
+        message: "No records found for provided year."
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        stats
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      error: "Something went wrong",
+      message: error.message
+    });
+  }
+};
