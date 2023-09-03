@@ -52,7 +52,11 @@ const tourSchema = mongoose.Schema(
       type: Date,
       default: Date.now()
     },
-    startDates: [Date]
+    startDates: [Date],
+    isPrivateTour: {
+      type: Boolean,
+      default: false
+    }
   },
   { toJSON: { virtuals: true } },
   { toObject: { virtuals: true } }
@@ -66,6 +70,8 @@ tourSchema.virtual("durationInWeek").get(function getDurationInWeeks() {
 
 // Just like express we mongoose also has middleware.
 // Docs: https://mongoosejs.com/docs/middleware.html
+
+// DOCUMENT MIDDLEWARE
 tourSchema.pre("save", function tourSchemaPre(next) {
   // console.log(this); // prints this current document to be saved.
   this.slug = this.name.toLowerCase().replaceAll(" ", "-");
@@ -80,6 +86,34 @@ tourSchema.pre("save", function tourSchemaPre(next) {
 
 // tourSchema.post("save", (doc, next) => {
 //   console.log("From mongoose document post middleware", { doc });
+//   next();
+// });
+
+// QUERY MIDDLEWARE
+// have used a regex here match any string that starts with find such as findOne, find, etc
+
+// tourSchema.pre(/^find/, function tourSchemaFindPre(next) {
+//   // `this` here is a query object not the document
+//   // chaining the find method
+//   this.find({ isPrivateTour: { $ne: true } });
+
+//   this.start = Date.now();
+//   next();
+// });
+
+// tourSchema.post(/^find/, function tourSchemaFindPre(docs, next) {
+//   // `this` here is a query object not the document
+//   // chaining the find method
+//   console.log(`Query took ${Date.now() - this.start} ms to run.`);
+//   next();
+// });
+
+// AGGREGATION MIDDLEWARE
+
+// tourSchema.pre("aggregate", function tourSchemaFindPre(next) {
+//   // `this` here is a current aggregation object not the document
+//   // console.log(this._pipeline); // prints the pipeline array
+//   this._pipeline.unshift({ $match: { isPrivateTour: { $ne: true } } });
 //   next();
 // });
 
