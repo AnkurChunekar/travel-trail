@@ -1,5 +1,10 @@
 const mongoose = require("mongoose");
 
+// Docs for the features used here.
+// Validation: https://mongoosejs.com/docs/validation.html
+// virtuals: https://mongoosejs.com/docs/tutorials/virtuals.html
+// middlewares: https://mongoosejs.com/docs/middleware.html
+
 const tourSchema = mongoose.Schema(
   {
     name: {
@@ -43,10 +48,19 @@ const tourSchema = mongoose.Schema(
     price: {
       type: Number,
       required: [true, "A tour must have a price"],
-      min: [500, "Too cheap to be trusted"],
-      max: [10000, "Too costly to be afforded"]
+      min: [500, "Too cheap to be trusted, min should be 500."],
+      max: [10000, "Too costly to be afforded, max can be 10000"]
     },
-    priceDiscount: Number,
+    priceDiscount: {
+      type: Number,
+      validate: {
+        // eslint-disable-next-line object-shorthand
+        validator: function priceDiscountValidator(value) {
+          return value < this.price;
+        },
+        message: "priceDiscount (i.e {VALUE}) should be less than price!"
+      }
+    },
     summary: {
       type: String,
       trim: true
@@ -74,14 +88,12 @@ const tourSchema = mongoose.Schema(
   { toObject: { virtuals: true } }
 );
 
-// Docs for virtuals: https://mongoosejs.com/docs/tutorials/virtuals.html
 tourSchema.virtual("durationInWeek").get(function getDurationInWeeks() {
   return (this.duration / 7).toFixed(2);
 });
 // obviously virtual properties cannot be used in queries, cause these are not present on documents in mongoDB
 
 // Just like express we mongoose also has middleware.
-// Docs: https://mongoosejs.com/docs/middleware.html
 
 // DOCUMENT MIDDLEWARE
 tourSchema.pre("save", function tourSchemaPre(next) {
