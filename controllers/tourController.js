@@ -1,6 +1,7 @@
 const Tour = require("../models/tourModel");
 const APIQueryFeatures = require("../utils/apiQueryFeatures");
 const catchAsyncError = require("../utils/catchAsyncError");
+const CustomError = require("../utils/customError");
 
 exports.getTop5AffordableQuery = async (req, res, next) => {
   req.query = {
@@ -60,10 +61,15 @@ exports.addNewTour = catchAsyncError(async (req, res) => {
   });
 });
 
-exports.getUniqueTour = catchAsyncError(async (req, res) => {
+exports.getUniqueTour = catchAsyncError(async (req, res, next) => {
   const tour = await Tour.findById(req.params.id);
   // alternate
   // Tour.findOne({ _id: req.params.id })
+
+  if (!tour) {
+    return next(new CustomError("Tour not found!", 404));
+  }
+
   res.json({
     data: {
       tour
