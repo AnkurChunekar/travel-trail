@@ -2,7 +2,10 @@ const express = require("express");
 const morgan = require("morgan");
 
 const tourRouter = require("./routes/tourRoutes");
+const CustomError = require("./utils/customError");
 // const userRouter = require("./routes/userRoutes");
+
+const errorHandler = require("./controllers/errorController");
 
 const app = express();
 
@@ -23,11 +26,12 @@ app.use((req, res, next) => {
 app.use("/api/v1/tours", tourRouter);
 // app.use("/api/v1/users", userRouter);
 
-app.all("*", (req, res) => {
-  res.status(404).json({
-    status: "failure",
-    message: `Cannot find ${req.originalUrl} route on this url.`
-  });
+app.all("*", (req, res, next) => {
+  next(
+    new CustomError(`Cannot find ${req.originalUrl} route on this url.`, 404)
+  );
 });
+
+app.use(errorHandler);
 
 module.exports = app;
