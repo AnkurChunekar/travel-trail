@@ -6,6 +6,7 @@
     "spaced-comment": "off",
     "no-console": "off",
     "no-process-exit": "off",
-    "new-cap": "off"
+    "new-cap": "off",
+    "consistent-return": "off"
   }
 }
