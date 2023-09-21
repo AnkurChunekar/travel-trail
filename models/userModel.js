@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
+const { ROLES } = require("../constants");
+
 const userSchema = mongoose.Schema({
   email: {
     type: String,
@@ -30,7 +32,12 @@ const userSchema = mongoose.Schema({
     minLength: [8, "password must be atleast of 8 characters"],
     select: false
   },
-  passwordChangedAt: Date
+  passwordChangedAt: Date,
+  role: {
+    type: String,
+    enum: Object.values(ROLES),
+    default: ROLES.USER
+  }
 });
 
 userSchema.pre("save", async function userSchemaPre(next) {

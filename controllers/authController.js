@@ -59,10 +59,14 @@ exports.protect = catchAsyncError(async (req, res, next) => {
   let token = "";
 
   // 1. check for auth header
-  if (authHeader.startsWith("Bearer") && authHeader.split(" ")[1]) {
+  if (
+    authHeader &&
+    authHeader.startsWith("Bearer") &&
+    authHeader.split(" ")[1]
+  ) {
     // eslint-disable-next-line prefer-destructuring
     token = authHeader.split(" ")[1];
-  } else next(new CustomError("Session expired, please login.", 401));
+  } else next(new CustomError("Token not provided, please login again.", 401));
 
   // 2. Verify the token.
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
@@ -84,3 +88,15 @@ exports.protect = catchAsyncError(async (req, res, next) => {
   req.user = user;
   next();
 });
+
+exports.restrictTo =
+  (...roles) =>
+  (req, _, next) => {
+    if (!roles.includes(req.user.role)) {
+      next(
+        new CustomError("You are not authorised to perform this action", 403)
+      );
+    }
+
+    next();
+  };
