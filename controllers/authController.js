@@ -6,7 +6,7 @@ const CustomError = require("../utils/customError");
 
 const getToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: "30d"
+    expiresIn: process.env.JWT_EXPIRY
   });
 
 exports.signup = catchAsyncError(async (req, res, next) => {
