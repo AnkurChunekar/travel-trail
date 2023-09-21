@@ -29,7 +29,8 @@ const userSchema = mongoose.Schema({
     required: [true, "Please provide your password"],
     minLength: [8, "password must be atleast of 8 characters"],
     select: false
-  }
+  },
+  passwordChangedAt: Date
 });
 
 userSchema.pre("save", async function userSchemaPre(next) {
@@ -46,6 +47,22 @@ userSchema.pre("save", async function userSchemaPre(next) {
 
 userSchema.methods.isPasswordCorrect = (password, hashedPassword) =>
   bcrypt.compare(password, hashedPassword);
+
+userSchema.methods.passChangedAfterToken = function passChangedAfterToken(
+  JWTTimestamp
+) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
+
+    return JWTTimestamp < changedTimestamp;
+  }
+
+  // False means NOT changed
+  return false;
+};
 
 const User = new mongoose.model("User", userSchema);
 

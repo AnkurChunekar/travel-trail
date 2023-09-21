@@ -44,6 +44,13 @@ const handleKnownErrors = (error) => {
     return new CustomError(message, 400);
   }
 
+  if (
+    error.name === "JsonWebTokenError" ||
+    error.name === "TokenExpiredError"
+  ) {
+    return new CustomError("Session expired, please login again.", 401);
+  }
+
   return error;
 };
 

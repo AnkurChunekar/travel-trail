@@ -3,8 +3,11 @@ const express = require("express");
 
 // internal
 const tourController = require("../controllers/tourController");
+const authController = require("../controllers/authController");
 
 const router = express.Router();
+
+router.use(authController.protect);
 
 router
   .route("/")
