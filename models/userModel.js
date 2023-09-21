@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
-const schema = mongoose.Schema({
+const userSchema = mongoose.Schema({
   email: {
     type: String,
     required: [true, "Please provide your email"],
@@ -26,14 +27,26 @@ const schema = mongoose.Schema({
   password: {
     type: String,
     required: [true, "Please provide your password"],
-    minLength: [8, "password must be atleast of 8 characters"]
-  },
-  passwordConfirm: {
-    type: String,
-    required: [true, "Please confirm your email"]
+    minLength: [8, "password must be atleast of 8 characters"],
+    select: false
   }
 });
 
-const User = new mongoose.model("User", schema);
+userSchema.pre("save", async function userSchemaPre(next) {
+  console.log("Inside user model pre save middleware");
+  // only run if password was modified or first time
+  if (this.isModified("password")) {
+    const salt = await bcrypt.genSalt(12);
+    const hashedPassword = await bcrypt.hash(this.password, salt);
+    this.password = hashedPassword;
+  }
+
+  next();
+});
+
+userSchema.methods.isPasswordCorrect = (password, hashedPassword) =>
+  bcrypt.compare(password, hashedPassword);
+
+const User = new mongoose.model("User", userSchema);
 
 module.exports = User;
