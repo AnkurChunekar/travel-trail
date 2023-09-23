@@ -55,6 +55,14 @@ userSchema.pre("save", async function userSchemaPre(next) {
   next();
 });
 
+userSchema.pre("save", async function (next) {
+  if (!this.isNew && this.isModified("password")) {
+    this.passwordChangedAt = Date.now();
+  }
+
+  next();
+});
+
 userSchema.methods.isPasswordCorrect = (password, hashedPassword) =>
   bcrypt.compare(password, hashedPassword);
 
