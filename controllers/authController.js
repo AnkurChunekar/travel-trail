@@ -170,28 +170,12 @@ exports.resetPassword = catchAsyncError(async (req, res, next) => {
     .update(code)
     .digest("hex");
 
-  const user = await User.findOne({ passwordResetToken });
+  const user = await User.findOne({
+    passwordResetToken,
+    passwordResetTokenExpiry: { $gt: Date.now() }
+  });
 
-  if (!user)
-    return next(
-      new CustomError(
-        "Invalid token, please generate a new token to reset the password",
-        400
-      )
-    );
-
-  // 3. If token is not expired and user is present, then reset the password.
-  const expiryDate = new Date(user.passwordResetTokenExpiry).getTime();
-
-  const expired = expiryDate < Date.now();
-
-  if (expired)
-    return next(
-      new CustomError(
-        "Validity expired, please generate a new token to reset the password",
-        400
-      )
-    );
+  if (!user) return next(new CustomError("Token is invalid or expired", 400));
 
   user.password = password;
   user.passwordResetTokenExpiry = undefined;
