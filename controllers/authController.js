@@ -1,9 +1,12 @@
 const { promisify } = require("util");
+const crypto = require("crypto");
+
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/userModel");
 const catchAsyncError = require("../utils/catchAsyncError");
 const CustomError = require("../utils/customError");
+const sendEmail = require("../utils/email");
 
 const getToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -11,9 +14,9 @@ const getToken = (id) =>
   });
 
 exports.signup = catchAsyncError(async (req, res, next) => {
-  const { email, name, photo, password, passwordConfirm } = req.body;
+  const { email, name, photo, password, confirmPassword } = req.body;
 
-  if (password !== passwordConfirm)
+  if (password !== confirmPassword)
     return next(
       new CustomError("Password and confirm password should be same", 400)
     );
@@ -100,3 +103,108 @@ exports.restrictTo =
 
     next();
   };
+
+exports.forgotPassword = catchAsyncError(async (req, res, next) => {
+  const user = await User.findOne({ email: req.body.email });
+
+  if (!user) return next(new CustomError("User not found.", 400));
+
+  const resetToken = user.createResetPassToken();
+
+  await user.save();
+
+  try {
+    const resetUrl = `${req.protocol}://${req.get(
+      "host"
+    )}/api/v1/users/resetPassword/${resetToken}`;
+
+    console.log({ new: resetUrl });
+
+    await sendEmail({
+      message: `Forgot your password? Please send a PATCH request on the following url: ${resetUrl}`,
+      email: user.email,
+      subject: "TravelTrail: Reset Password (Valid for 10 mins)"
+    });
+
+    res.status(200).json({
+      status: "success",
+      message: "Password Reset Email sent successfully"
+    });
+  } catch (error) {
+    console.log(error.message);
+    user.passwordResetToken = undefined;
+    user.passwordResetTokenExpiry = undefined;
+    await user.save();
+    next(
+      new CustomError(
+        "Error occured while sending email, please try again after some time.",
+        500
+      )
+    );
+  }
+});
+
+exports.resetPassword = catchAsyncError(async (req, res, next) => {
+  const { code } = req.params;
+  const { password, confirmPassword } = req.body;
+
+  // 1. if not code or not passwords the throw error
+  if (!code) {
+    return next(
+      new CustomError("Please use the correct url provided in mail.", 400)
+    );
+  }
+
+  if (!password || confirmPassword !== password) {
+    return next(
+      new CustomError(
+        "Password should be valid and should be equal to confirm password.",
+        400
+      )
+    );
+  }
+
+  // 2. Get user based on the code
+  const passwordResetToken = crypto
+    .createHash("sha256")
+    .update(code)
+    .digest("hex");
+
+  const user = await User.findOne({ passwordResetToken });
+
+  if (!user)
+    return next(
+      new CustomError(
+        "Invalid token, please generate a new token to reset the password",
+        400
+      )
+    );
+
+  // 3. If token is not expired and user is present, then reset the password.
+  const expiryDate = new Date(user.passwordResetTokenExpiry).getTime();
+
+  const expired = expiryDate < Date.now();
+
+  if (expired)
+    return next(
+      new CustomError(
+        "Validity expired, please generate a new token to reset the password",
+        400
+      )
+    );
+
+  user.password = password;
+  user.passwordResetTokenExpiry = undefined;
+  user.passwordResetToken = undefined;
+
+  await user.save();
+
+  // eslint-disable-next-line no-underscore-dangle
+  const token = getToken(user._id);
+
+  res.status(201).json({
+    status: "success",
+    message: "Password reset completed successfully.",
+    token
+  });
+});
