@@ -192,3 +192,47 @@ exports.resetPassword = catchAsyncError(async (req, res, next) => {
     token
   });
 });
+
+exports.updatePassword = catchAsyncError(async (req, res, next) => {
+  // 1. Get the user data from collection
+  const {
+    body: { password, newPassword, confirmNewPassword }
+  } = req;
+
+  if (!password || !newPassword || confirmNewPassword !== newPassword) {
+    return next(
+      new CustomError(
+        "Invalid passwords or confirm password doesn't match the new password",
+        400
+      )
+    );
+  }
+
+  // eslint-disable-next-line no-underscore-dangle
+  const user = await User.findById(req.user._id).select("+password");
+  // findOneAndUpdate wont work here because we want to fire the pre save middlewares also
+
+  // 2. check if password if correct.
+  const isPasswordCorrect = await user.isPasswordCorrect(
+    password,
+    user.password
+  );
+
+  if (!isPasswordCorrect)
+    return next(new CustomError("Incorrect password.", 401));
+
+  // 3. if so change the password
+  user.password = newPassword;
+
+  await user.save();
+
+  // 4. Create new token and send it
+  // eslint-disable-next-line no-underscore-dangle
+  const token = getToken(user._id);
+
+  res.json({
+    message: "Password updated successfully",
+    status: "success",
+    token
+  });
+});
