@@ -1,5 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
+const helmet = require("helmet");
 const { rateLimit } = require("express-rate-limit");
 
 const tourRouter = require("./routes/tourRoutes");
@@ -20,14 +21,24 @@ const limiter = rateLimit({
 });
 
 // 1) MIDDLEWARES
+//  SECURITY HTTP HEADERS
+app.use(helmet());
+
+// LOGGER
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
+// RATE LIMITING
 app.use("/api", limiter);
-app.use(express.json());
+
+// BODY PARSERS
+app.use(express.json({ limit: "100kb" }));
+
+// SERVE STATIC FILES
 app.use(express.static(`${__dirname}/public`));
 
+// CUSTOM EXAMPLE
 app.use((req, res, next) => {
   console.log("Hello from the middleware 👋");
   next();
