@@ -22,8 +22,29 @@ exports.updateMe = catchAsyncError(async (req, res, next) => {
     { runValidators: true, new: true }
   );
 
-  res.status(201).json({
+  res.status(200).json({
     status: "success",
     data: { user }
+  });
+});
+
+exports.deleteMe = catchAsyncError(async (req, res) => {
+  // eslint-disable-next-line no-underscore-dangle
+  await User.findByIdAndUpdate(req.user._id, { active: false });
+
+  res.status(204).json({
+    status: "success",
+    message: "User deleted successfully"
+  });
+});
+
+exports.getAllUsers = catchAsyncError(async (_, res) => {
+  const users = await User.find({});
+
+  res.json({
+    results: users.length,
+    data: {
+      users
+    }
   });
 });

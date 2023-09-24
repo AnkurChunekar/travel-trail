@@ -103,6 +103,7 @@ tourSchema.pre("save", function tourSchemaPre(next) {
 });
 
 // just to show that multiple middlewares can be added.
+//  DOCUMENT middleware
 // tourSchema.pre("save", function tourSchemaPreAgain(next) {
 //   console.log(`Just printing name: ${this.name} b4 saving the doc.`);
 //   next();

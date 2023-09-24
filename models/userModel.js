@@ -40,7 +40,12 @@ const userSchema = mongoose.Schema({
     default: ROLES.USER
   },
   passwordResetToken: String,
-  passwordResetTokenExpiry: Date
+  passwordResetTokenExpiry: Date,
+  active: {
+    type: Boolean,
+    default: true,
+    select: false
+  }
 });
 
 userSchema.pre("save", async function userSchemaPre(next) {
@@ -61,6 +66,10 @@ userSchema.pre("save", async function (next) {
   }
 
   next();
+});
+
+userSchema.pre(/^find/, async function () {
+  this.find({ active: { $ne: false } });
 });
 
 userSchema.methods.isPasswordCorrect = (password, hashedPassword) =>
