@@ -8,10 +8,14 @@ const catchAsyncError = require("../utils/catchAsyncError");
 const CustomError = require("../utils/customError");
 const sendEmail = require("../utils/email");
 
-const getToken = (id) =>
-  jwt.sign({ id }, process.env.JWT_SECRET, {
+const sendResWithToken = ({ res, user, jsonData = {}, statusCode = 200 }) => {
+  // eslint-disable-next-line no-underscore-dangle
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRY
   });
+
+  res.status(statusCode).json({ ...jsonData, token, status: "success" });
+};
 
 exports.signup = catchAsyncError(async (req, res, next) => {
   const { email, name, photo, password, confirmPassword } = req.body;
@@ -22,13 +26,13 @@ exports.signup = catchAsyncError(async (req, res, next) => {
     );
 
   const user = await User.create({ email, name, photo, password });
-  // eslint-disable-next-line no-underscore-dangle
-  const token = getToken(user._id);
-
-  res.status(201).json({
-    status: "success",
-    token,
-    data: { name: user.name, email: user.email, photo: user.photo }
+  sendResWithToken({
+    statusCode: 201,
+    jsonData: {
+      data: { name: user.name, email: user.email, photo: user.photo }
+    },
+    user,
+    res
   });
 });
 
@@ -49,10 +53,11 @@ exports.login = catchAsyncError(async (req, res, next) => {
 
   if (!match) return next(genericErr);
 
-  // eslint-disable-next-line no-underscore-dangle
-  const token = getToken(user._id);
-
-  res.status(200).json({ status: "success", token });
+  sendResWithToken({
+    jsonData: { message: "Logged in Successfully" },
+    user,
+    res
+  });
 });
 
 exports.protect = catchAsyncError(async (req, res, next) => {
@@ -183,13 +188,10 @@ exports.resetPassword = catchAsyncError(async (req, res, next) => {
 
   await user.save();
 
-  // eslint-disable-next-line no-underscore-dangle
-  const token = getToken(user._id);
-
-  res.status(201).json({
-    status: "success",
-    message: "Password reset completed successfully.",
-    token
+  sendResWithToken({
+    jsonData: { message: "Password reset completed successfully." },
+    user,
+    res
   });
 });
 
@@ -227,12 +229,10 @@ exports.updatePassword = catchAsyncError(async (req, res, next) => {
   await user.save();
 
   // 4. Create new token and send it
-  // eslint-disable-next-line no-underscore-dangle
-  const token = getToken(user._id);
 
-  res.json({
-    message: "Password updated successfully",
-    status: "success",
-    token
+  sendResWithToken({
+    jsonData: { message: "Password updated successfully." },
+    user,
+    res
   });
 });
