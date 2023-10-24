@@ -155,6 +155,18 @@ tourSchema.pre("save", function tourSchemaPre(next) {
 //   next();
 // });
 
+tourSchema.pre(/^find/, function tourSchemaFindPre(next) {
+  // `this` here is a query object not the document
+  // chaining the find method
+  this.populate({
+    path: "guides",
+    select:
+      "-__v -passwordChangedAt -passwordResetToken -passwordResetTokenExpiry"
+  });
+
+  next();
+});
+
 // tourSchema.post(/^find/, function tourSchemaFindPre(docs, next) {
 //   // `this` here is a query object not the document
 //   // chaining the find method
