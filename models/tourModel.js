@@ -122,6 +122,17 @@ tourSchema.virtual("durationInWeek").get(function getDurationInWeeks() {
 });
 // obviously virtual properties cannot be used in queries, cause these are not present on documents in mongoDB
 
+// We have modeled reviews tours using parent referencing!
+// this reviews virtual will be used to populate all the reviews of the tour
+// this will not be present on the actual doc in mongodb
+// DOC: https://mongoosejs.com/docs/tutorials/virtuals.html#populate
+tourSchema.virtual("reviews", {
+  ref: "Review",
+  foreignField: "tour", // So on Review model this tour's id is saved in tour property that's why tour here
+  localField: "_id" // again id we are saving in review model property name is _id
+  // justOne: true
+});
+
 // Just like express we mongoose also has middleware.
 
 // DOCUMENT MIDDLEWARE

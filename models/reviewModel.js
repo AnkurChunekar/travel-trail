@@ -27,8 +27,8 @@ const reviewSchema = mongoose.Schema(
       default: Date.now()
     }
   },
-  { toJSON: { virtuals: true } },
-  { toObject: { virtuals: true } }
+  { toJSON: { virtuals: true } }, // why this? -> https://mongoosejs.com/docs/tutorials/virtuals.html#virtuals-in-json
+  { toObject: { virtuals: true } } // why this? -> https://mongoosejs.com/docs/tutorials/virtuals.html#virtuals-in-json
 );
 
 // QUERY MIDDLEWARE
@@ -36,10 +36,15 @@ reviewSchema.pre(/^find/, function populateData(next) {
   this.populate({
     path: "user",
     select: "name"
-  }).populate({
-    path: "tour",
-    select: "name photo"
   });
+
+  // this.populate({
+  //   path: "user",
+  //   select: "name"
+  // }).populate({
+  //   path: "tour",
+  //   select: "name photo"
+  // });
 
   next();
 });

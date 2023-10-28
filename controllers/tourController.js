@@ -62,7 +62,7 @@ exports.addNewTour = catchAsyncError(async (req, res) => {
 });
 
 exports.getUniqueTour = catchAsyncError(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.id);
+  const tour = await Tour.findById(req.params.id).populate("reviews");
   // alternate
   // Tour.findOne({ _id: req.params.id })
 
