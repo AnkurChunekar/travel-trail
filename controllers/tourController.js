@@ -42,26 +42,6 @@ exports.getAllTours = catchAsyncError(async (req, res) => {
   });
 });
 
-exports.addNewTour = catchAsyncError(async (req, res) => {
-  const result = await Tour.create(req.body);
-  // .create can take array of multiple objects also
-
-  /*  
-
-    Alternative way
-    const tour = new Tour({...data_here});
-    const result = await tour.save();
-
-    */
-
-  res.status(201).json({
-    message: "Success, added new doc",
-    data: {
-      tour: result
-    }
-  });
-});
-
 exports.getUniqueTour = catchAsyncError(async (req, res, next) => {
   const tour = await Tour.findById(req.params.id).populate("reviews");
   // alternate
@@ -78,6 +58,7 @@ exports.getUniqueTour = catchAsyncError(async (req, res, next) => {
   });
 });
 
+exports.addNewTour = factory.createOne(Tour);
 exports.updateTour = factory.updateOne(Tour);
 exports.deleteTour = factory.deleteOne(Tour);
 

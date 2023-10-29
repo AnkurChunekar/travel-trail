@@ -29,3 +29,24 @@ exports.updateOne = (Model) =>
       }
     });
   });
+
+exports.createOne = (Model) =>
+  catchAsyncError(async (req, res) => {
+    const doc = await Model.create(req.body);
+    // .create can take array of multiple objects also
+
+    /*  
+  
+      Alternative way
+      const tour = new Tour({...data_here});
+      const doc = await tour.save();
+  
+      */
+
+    res.status(201).json({
+      message: "Document added successfully!",
+      data: {
+        data: doc
+      }
+    });
+  });

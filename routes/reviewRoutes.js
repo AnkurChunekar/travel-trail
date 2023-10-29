@@ -12,6 +12,7 @@ router
   .post(
     authController.protect,
     authController.restrictTo(ROLES.USER),
+    reviewController.modifyAddReviewBody,
     reviewController.addNewReview
   );
 
