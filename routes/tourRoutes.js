@@ -4,9 +4,13 @@ const express = require("express");
 // internal
 const tourController = require("../controllers/tourController");
 const authController = require("../controllers/authController");
+const reviewRouter = require("./reviewRoutes");
+
 const { ROLES } = require("../constants");
 
 const router = express.Router();
+
+router.use("/:tourId/reviews", reviewRouter);
 
 router.use(authController.protect);
 
