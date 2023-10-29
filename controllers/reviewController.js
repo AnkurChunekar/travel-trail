@@ -2,7 +2,11 @@ const catchAsyncError = require("../utils/catchAsyncError");
 const Review = require("../models/reviewModel");
 
 exports.getAllReviews = catchAsyncError(async (req, res) => {
-  const reviews = await Review.find({ user: req.user.id });
+  let filter = {};
+
+  if (req.params.tourId) filter = { tour: req.params.tourId };
+
+  const reviews = await Review.find(filter);
 
   res.json({
     results: reviews.length,
