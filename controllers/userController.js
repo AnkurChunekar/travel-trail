@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const catchAsyncError = require("../utils/catchAsyncError");
 const CustomError = require("../utils/customError");
+const factory = require("./handlerFactory");
 
 exports.updateMe = catchAsyncError(async (req, res, next) => {
   if (req.body.password || req.body.confirmPassword)
@@ -48,3 +49,10 @@ exports.getAllUsers = catchAsyncError(async (_, res) => {
     }
   });
 });
+
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};
+
+exports.getUser = factory.getOne(User);
