@@ -23,6 +23,7 @@ exports.modifyAddReviewBody = (req, res, next) => {
   next();
 };
 
+exports.getReview = factory.getOne(Review);
 exports.addNewReview = factory.createOne(Review);
 exports.deleteReview = factory.deleteOne(Review);
 exports.updateReview = factory.updateOne(Review);

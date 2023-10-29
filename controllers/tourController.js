@@ -1,7 +1,7 @@
 const Tour = require("../models/tourModel");
 const APIQueryFeatures = require("../utils/apiQueryFeatures");
 const catchAsyncError = require("../utils/catchAsyncError");
-const CustomError = require("../utils/customError");
+// const CustomError = require("../utils/customError");
 const factory = require("./handlerFactory");
 
 exports.getTop5AffordableQuery = async (req, res, next) => {
@@ -42,22 +42,7 @@ exports.getAllTours = catchAsyncError(async (req, res) => {
   });
 });
 
-exports.getUniqueTour = catchAsyncError(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.id).populate("reviews");
-  // alternate
-  // Tour.findOne({ _id: req.params.id })
-
-  if (!tour) {
-    return next(new CustomError("Tour not found!", 404));
-  }
-
-  res.json({
-    data: {
-      tour
-    }
-  });
-});
-
+exports.getUniqueTour = factory.getOne(Tour, ["reviews"]);
 exports.addNewTour = factory.createOne(Tour);
 exports.updateTour = factory.updateOne(Tour);
 exports.deleteTour = factory.deleteOne(Tour);

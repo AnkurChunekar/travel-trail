@@ -50,3 +50,29 @@ exports.createOne = (Model) =>
       }
     });
   });
+
+exports.getOne = (Model, populateArr = []) =>
+  catchAsyncError(async (req, res, next) => {
+    let query = Model.findById(req.params.id);
+
+    // alternate
+    // Tour.findOne({ _id: req.params.id })
+
+    if (populateArr.length) {
+      populateArr.forEach((str) => {
+        query = query.populate(str);
+      });
+    }
+
+    const doc = await query;
+
+    if (!doc) {
+      return next(new CustomError("Requested data not found!", 404));
+    }
+
+    res.json({
+      data: {
+        data: doc
+      }
+    });
+  });
