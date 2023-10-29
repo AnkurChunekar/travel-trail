@@ -1,5 +1,6 @@
 const catchAsyncError = require("../utils/catchAsyncError");
 const Review = require("../models/reviewModel");
+const factory = require("./handlerFactory");
 
 exports.getAllReviews = catchAsyncError(async (req, res) => {
   let filter = {};
@@ -33,3 +34,5 @@ exports.addNewReview = catchAsyncError(async (req, res) => {
     data: newReview
   });
 });
+
+exports.deleteReview = factory.deleteOne(Review);
