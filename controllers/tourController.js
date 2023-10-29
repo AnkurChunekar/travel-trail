@@ -1,5 +1,5 @@
 const Tour = require("../models/tourModel");
-const APIQueryFeatures = require("../utils/apiQueryFeatures");
+// const APIQueryFeatures = require("../utils/apiQueryFeatures");
 const catchAsyncError = require("../utils/catchAsyncError");
 // const CustomError = require("../utils/customError");
 const factory = require("./handlerFactory");
@@ -14,34 +14,7 @@ exports.getTop5AffordableQuery = async (req, res, next) => {
   next();
 };
 
-exports.getAllTours = catchAsyncError(async (req, res) => {
-  // REFER TO docs/advanced-filtering.md FOR DOCUMENTATION
-
-  // Build Query
-  const features = new APIQueryFeatures(Tour.find(), req.query)
-    .sanitizeQueryObj()
-    .sort()
-    .paginate()
-    .project();
-
-  // alternate for normal query
-  // const query = Tour.find({})
-  //   .where("duration")
-  //   .equals(req.query.duration)
-  //   .where("difficulty")
-  //   .equals(req.query.difficulty);
-
-  // Execute Query
-  const tours = await features.query;
-
-  res.json({
-    results: tours.length,
-    data: {
-      tours
-    }
-  });
-});
-
+exports.getAllTours = factory.getAll(Tour);
 exports.getUniqueTour = factory.getOne(Tour, ["reviews"]);
 exports.addNewTour = factory.createOne(Tour);
 exports.updateTour = factory.updateOne(Tour);

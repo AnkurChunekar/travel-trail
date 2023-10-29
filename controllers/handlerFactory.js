@@ -1,3 +1,4 @@
+const APIQueryFeatures = require("../utils/apiQueryFeatures");
 const catchAsyncError = require("../utils/catchAsyncError");
 const CustomError = require("../utils/customError");
 
@@ -73,6 +74,38 @@ exports.getOne = (Model, populateArr = []) =>
     res.json({
       data: {
         data: doc
+      }
+    });
+  });
+
+exports.getAll = (Model) =>
+  catchAsyncError(async (req, res) => {
+    // REFER TO docs/advanced-filtering.md FOR DOCUMENTATION
+
+    // Build Query
+    const features = new APIQueryFeatures(
+      Model.find(req.getAllFilter || {}),
+      req.query
+    )
+      .sanitizeQueryObj()
+      .sort()
+      .paginate()
+      .project();
+
+    // alternate for normal query
+    // const query = Tour.find({})
+    //   .where("duration")
+    //   .equals(req.query.duration)
+    //   .where("difficulty")
+    //   .equals(req.query.difficulty);
+
+    // Execute Query
+    const docs = await features.query;
+
+    res.json({
+      results: docs.length,
+      data: {
+        data: docs
       }
     });
   });
