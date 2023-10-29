@@ -78,19 +78,7 @@ exports.getUniqueTour = catchAsyncError(async (req, res, next) => {
   });
 });
 
-exports.updateTour = catchAsyncError(async (req, res) => {
-  const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true
-  });
-
-  res.json({
-    data: {
-      tour
-    }
-  });
-});
-
+exports.updateTour = factory.updateOne(Tour);
 exports.deleteTour = factory.deleteOne(Tour);
 
 exports.getTourStats = catchAsyncError(async (req, res) => {

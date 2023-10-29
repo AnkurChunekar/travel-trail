@@ -13,3 +13,19 @@ exports.deleteOne = (Model) =>
       data: null
     });
   });
+
+exports.updateOne = (Model) =>
+  catchAsyncError(async (req, res, next) => {
+    const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
+    });
+
+    if (!doc) next(new CustomError("No document found for the provided ID"));
+
+    res.json({
+      data: {
+        data: doc
+      }
+    });
+  });
