@@ -6,15 +6,12 @@ const { ROLES } = require("../constants");
 // why merge params? -> https://expressjs.com/en/5x/api.html#express.router
 const router = express.Router({ mergeParams: true });
 
+router.use(authController.protect);
+
 router
   .route("/")
-  .get(
-    authController.protect,
-    reviewController.modifyGetAllFilter,
-    reviewController.getAllReviews
-  )
+  .get(reviewController.modifyGetAllFilter, reviewController.getAllReviews)
   .post(
-    authController.protect,
     authController.restrictTo(ROLES.USER),
     reviewController.modifyAddReviewBody,
     reviewController.addNewReview
@@ -22,8 +19,14 @@ router
 
 router
   .route("/:id")
-  .get(authController.protect, reviewController.getReview)
-  .delete(authController.protect, reviewController.deleteReview)
-  .patch(authController.protect, reviewController.updateReview);
+  .get(reviewController.getReview)
+  .delete(
+    authController.restrictTo(ROLES.USER, ROLES.ADMIN),
+    reviewController.deleteReview
+  )
+  .patch(
+    authController.restrictTo(ROLES.USER, ROLES.ADMIN),
+    reviewController.updateReview
+  );
 
 module.exports = router;

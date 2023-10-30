@@ -12,12 +12,14 @@ const router = express.Router();
 
 router.use("/:tourId/reviews", reviewRouter);
 
-router.use(authController.protect);
-
 router
   .route("/")
   .get(tourController.getAllTours)
-  .post(tourController.addNewTour);
+  .post(
+    authController.protect,
+    authController.restrictTo(ROLES.ADMIN, ROLES.GUIDE_LEADER),
+    tourController.addNewTour
+  );
 
 router.get(
   "/top-five-affordable",
@@ -28,7 +30,11 @@ router.get(
 router.route("/stats").get(tourController.getTourStats);
 router
   .route("/monthly-tour-analytics")
-  .get(tourController.getMonthlyTourAnalytics);
+  .get(
+    authController.protect,
+    authController.restrictTo(ROLES.ADMIN, ROLES.GUIDE_LEADER, ROLES.GUIDE),
+    tourController.getMonthlyTourAnalytics
+  );
 
 // patch -> update some fields in original object
 // put -> original object will be completely replaced by new one
@@ -36,8 +42,13 @@ router
 router
   .route("/:id")
   .get(tourController.getUniqueTour)
-  .patch(tourController.updateTour)
+  .patch(
+    authController.protect,
+    authController.restrictTo(ROLES.ADMIN, ROLES.GUIDE_LEADER),
+    tourController.updateTour
+  )
   .delete(
+    authController.protect,
     authController.restrictTo(ROLES.ADMIN, ROLES.GUIDE_LEADER),
     tourController.deleteTour
   );
