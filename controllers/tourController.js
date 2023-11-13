@@ -1,6 +1,7 @@
 const Tour = require("../models/tourModel");
 // const APIQueryFeatures = require("../utils/apiQueryFeatures");
 const catchAsyncError = require("../utils/catchAsyncError");
+const CustomError = require("../utils/customError");
 // const CustomError = require("../utils/customError");
 const factory = require("./handlerFactory");
 
@@ -105,6 +106,43 @@ exports.getMonthlyTourAnalytics = catchAsyncError(async (req, res) => {
     status: "success",
     data: {
       stats
+    }
+  });
+});
+
+// /tours-within/:distance/center/:latlong/unit/:unit
+
+exports.getToursWithin = catchAsyncError(async (req, res, next) => {
+  const { distance, latlong = "", unit } = req.params;
+  const [latitude, longitude] = latlong.split(",");
+
+  if (!latitude || !longitude) {
+    return next(
+      new CustomError(
+        "Provide valid values in the format latitude,longitude",
+        400
+      )
+    );
+  }
+
+  // divide the distance value by radius of Earth
+  // mi -> miles km -> kilometers
+  const radius = unit === "mi" ? distance / 3963.2 : distance / 6378.1;
+  console.log({ radius });
+
+  const tours = await Tour.find({
+    startLocation: {
+      $geoWithin: {
+        $centerSphere: [[longitude, latitude], radius]
+      }
+    }
+  });
+
+  res.status(200).json({
+    status: "success",
+    results: tours.length,
+    data: {
+      tours
     }
   });
 });

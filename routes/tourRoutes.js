@@ -36,6 +36,11 @@ router
     tourController.getMonthlyTourAnalytics
   );
 
+router.get(
+  "/tours-within/:distance/center/:latlong/unit/:unit",
+  tourController.getToursWithin
+);
+
 // patch -> update some fields in original object
 // put -> original object will be completely replaced by new one
 

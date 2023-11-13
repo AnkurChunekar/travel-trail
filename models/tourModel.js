@@ -119,6 +119,8 @@ const tourSchema = mongoose.Schema(
 // added an compound index on price & ratingsAverage
 tourSchema.index({ price: 1, ratingsAverage: -1 });
 tourSchema.index({ slug: 1 });
+// geospacial index
+tourSchema.index({ startLocation: "2dsphere" });
 
 tourSchema.virtual("durationInWeek").get(function getDurationInWeeks() {
   return (this.duration / 7).toFixed(2);
