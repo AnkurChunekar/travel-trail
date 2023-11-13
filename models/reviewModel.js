@@ -65,37 +65,58 @@ reviewSchema.statics.calculateRatingsAverage = async function (tourId) {
       }
     ]);
 
-    if (result.length) {
-      const calculatedData = result[0];
-      await Tour.findByIdAndUpdate(
-        tourId,
-        {
-          ratingsAverage: calculatedData.avgRating.toFixed(1),
-          ratingsQuantity: calculatedData.noOfRating
-        },
-        {
-          runValidators: true
-        }
-      );
-      console.log(
-        "Ratings average and count updated successfully",
-        calculatedData
-      );
-    }
+    const calculatedData = result.length
+      ? result[0]
+      : { avgRating: 0, noOfRating: 0 };
+
+    await Tour.findByIdAndUpdate(
+      tourId,
+      {
+        ratingsAverage: calculatedData.avgRating.toFixed(1),
+        ratingsQuantity: calculatedData.noOfRating
+      },
+      {
+        runValidators: true
+      }
+    );
+    console.log(
+      "Ratings average and count updated successfully",
+      calculatedData
+    );
   } catch (error) {
     console.error(
-      "Error occured while updating ratings average and ratings count in tour document"
+      "Error occured while updating ratings average and ratings count in tour document",
+      error
     );
   }
 };
 
 reviewSchema.post("save", async function (doc) {
   this.constructor.calculateRatingsAverage(doc.tour);
+  console.log("CALLED");
+});
+
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+  switch (this.op) {
+    case "findOneAndUpdate":
+      this.tourId = this.getUpdate().tour;
+      break;
+    case "findOneAndDelete":
+      this.tourId = this.getQuery().tour;
+      break;
+
+    default:
+  }
+
+  next();
 });
 
 reviewSchema.post(/^findOneAnd/, async function () {
-  const review = await this.findOne().clone().exec();
-  review.constructor.calculateRatingsAverage(review.tour);
+  if (this.tourId) {
+    const model = new this.model();
+    model.constructor.calculateRatingsAverage(this.tourId);
+  } else
+    console.error("Unable to find the tour Id to update ratings avg and count");
 });
 
 const Review = new mongoose.model("Review", reviewSchema);

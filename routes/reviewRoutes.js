@@ -13,7 +13,7 @@ router
   .get(reviewController.modifyGetAllFilter, reviewController.getAllReviews)
   .post(
     authController.restrictTo(ROLES.USER),
-    reviewController.modifyAddReviewBody,
+    reviewController.modifyReviewBody,
     reviewController.addNewReview
   );
 
@@ -22,10 +22,12 @@ router
   .get(reviewController.getReview)
   .delete(
     authController.restrictTo(ROLES.USER, ROLES.ADMIN),
+    reviewController.modifyReviewBody,
     reviewController.deleteReview
   )
   .patch(
     authController.restrictTo(ROLES.USER, ROLES.ADMIN),
+    reviewController.modifyReviewBody,
     reviewController.updateReview
   );
 
