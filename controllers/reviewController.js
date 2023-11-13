@@ -8,7 +8,9 @@ exports.modifyGetAllFilter = (req, res, next) => {
 };
 
 exports.modifyAddReviewBody = (req, res, next) => {
-  if (!req.body.tourId) req.body.tourId = req.params.tourId;
+  if (!req.body.tourId) req.body.tour = req.params.tourId;
+  // eslint-disable-next-line no-underscore-dangle
+  req.body.user = req.user._id;
 
   next();
 };
