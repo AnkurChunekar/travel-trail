@@ -32,6 +32,8 @@ const reviewSchema = mongoose.Schema(
   { toObject: { virtuals: true } } // why this? -> https://mongoosejs.com/docs/tutorials/virtuals.html#virtuals-in-json
 );
 
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+
 // QUERY MIDDLEWARE
 reviewSchema.pre(/^find/, function populateData(next) {
   this.populate({
@@ -93,7 +95,6 @@ reviewSchema.statics.calculateRatingsAverage = async function (tourId) {
 
 reviewSchema.post("save", async function (doc) {
   this.constructor.calculateRatingsAverage(doc.tour);
-  console.log("CALLED");
 });
 
 reviewSchema.pre(/^findOneAnd/, async function (next) {
