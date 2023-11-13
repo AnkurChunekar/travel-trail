@@ -41,6 +41,8 @@ router.get(
   tourController.getToursWithin
 );
 
+router.get("/distances/:latlong/unit/:unit", tourController.getDistances);
+
 // patch -> update some fields in original object
 // put -> original object will be completely replaced by new one
 

@@ -146,3 +146,48 @@ exports.getToursWithin = catchAsyncError(async (req, res, next) => {
     }
   });
 });
+
+exports.getDistances = catchAsyncError(async (req, res, next) => {
+  const { latlong = "", unit } = req.params;
+  const [latitude, longitude] = latlong.split(",");
+
+  if (!latitude || !longitude) {
+    return next(
+      new CustomError(
+        "Provide valid values in the format latitude,longitude",
+        400
+      )
+    );
+  }
+
+  const distanceMultiplier = unit === "mi" ? 0.000621371 : 0.001;
+
+  const distances = await Tour.aggregate([
+    // IMP: $geoNear: always needs to be the first stage in geo aggrigations
+    // IMP: atleast one field needs have geo spacial index configured, eg startLocation in our case
+    {
+      $geoNear: {
+        near: {
+          type: "Point",
+          coordinates: [Number(longitude), Number(latitude)]
+        },
+        distanceField: "distance",
+        distanceMultiplier
+      }
+    },
+    {
+      $project: {
+        distance: 1,
+        name: 1
+      }
+    }
+  ]);
+
+  res.status(200).json({
+    status: "success",
+    results: distances.length,
+    data: {
+      distances
+    }
+  });
+});
