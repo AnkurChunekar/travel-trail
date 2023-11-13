@@ -100,6 +100,7 @@ exports.getAll = (Model) =>
     //   .equals(req.query.difficulty);
 
     // Execute Query
+    // const docs = await features.query.explain(); // this can be used to explain the performance of the query
     const docs = await features.query;
 
     res.json({

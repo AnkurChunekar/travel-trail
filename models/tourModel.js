@@ -116,6 +116,10 @@ const tourSchema = mongoose.Schema(
   { toObject: { virtuals: true } }
 );
 
+// added an compound index on price & ratingsAverage
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ slug: 1 });
+
 tourSchema.virtual("durationInWeek").get(function getDurationInWeeks() {
   return (this.duration / 7).toFixed(2);
 });
