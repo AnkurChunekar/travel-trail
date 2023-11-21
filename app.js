@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const morgan = require("morgan");
 const helmet = require("helmet");
@@ -25,6 +26,14 @@ const limiter = rateLimit({
 });
 
 // 1) MIDDLEWARES
+
+// SERVE STATIC FILES
+app.use(express.static(path.join(__dirname, "public")));
+
+//  SETTING VIEW ENGINE & DIRECTORY
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
+
 //  SECURITY HTTP HEADERS
 app.use(helmet());
 
@@ -48,9 +57,6 @@ app.use(xss());
 // Prevent parameter pollution
 app.use(hpp());
 
-// SERVE STATIC FILES
-app.use(express.static(`${__dirname}/public`));
-
 // CUSTOM EXAMPLE
 app.use((req, res, next) => {
   console.log("Hello from the middleware 👋");
@@ -58,6 +64,10 @@ app.use((req, res, next) => {
 });
 
 // 3) ROUTES
+app.get("/", (_, res) => {
+  res.status(200).render("base");
+});
+
 app.use("/api/v1/tours", tourRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/reviews", reviewRouter);
