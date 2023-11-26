@@ -11,6 +11,7 @@ const tourRouter = require("./routes/tourRoutes");
 const CustomError = require("./utils/customError");
 const userRouter = require("./routes/userRoutes");
 const reviewRouter = require("./routes/reviewRoutes");
+const viewRouter = require("./routes/viewRoutes");
 
 const errorHandler = require("./controllers/errorController");
 
@@ -64,18 +65,7 @@ app.use((req, res, next) => {
 });
 
 // 3) ROUTES
-app.get("/", (_, res) => {
-  res.status(200).render("base", { title: "Home" });
-});
-
-app.get("/overview", (_, res) => {
-  res.status(200).render("tour", { title: "All Tours" });
-});
-
-app.get("/tour", (_, res) => {
-  res.status(200).render("overview", { title: "The Forest Hiker" });
-});
-
+app.use("/", viewRouter);
 app.use("/api/v1/tours", tourRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/reviews", reviewRouter);
