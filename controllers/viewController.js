@@ -23,3 +23,11 @@ exports.getTour = catchAsyncError(async (req, res) => {
 
   res.status(200).render("tour", { title: `${tour.name} Tour`, tour });
 });
+
+exports.userLogin = catchAsyncError(async (_, res) => {
+  res.status(200).render("login", { title: "Log into your account" });
+});
+
+exports.userSignup = catchAsyncError(async (_, res) => {
+  res.status(200).render("login", { title: "Create an account" });
+});
