@@ -15,5 +15,11 @@ exports.getTour = catchAsyncError(async (req, res) => {
     fields: "review rating user"
   });
 
-  res.status(200).render("tour", { title: "The Forest Hiker", tour });
+  res.setHeader(
+    "Content-Security-Policy",
+    "script-src  'self' unpkg.com",
+    "script-src-elem 'self' unpkg.com"
+  );
+
+  res.status(200).render("tour", { title: `${tour.name} Tour`, tour });
 });
