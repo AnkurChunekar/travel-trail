@@ -6,6 +6,7 @@ const { rateLimit } = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
+const cookieParser = require("cookie-parser");
 
 const tourRouter = require("./routes/tourRoutes");
 const CustomError = require("./utils/customError");
@@ -46,8 +47,9 @@ if (process.env.NODE_ENV === "development") {
 // RATE LIMITING
 app.use("/api", limiter);
 
-// BODY PARSERS
+// BODY & Cookie PARSERS
 app.use(express.json({ limit: "100kb" }));
+app.use(cookieParser());
 
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize());
