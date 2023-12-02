@@ -1,6 +1,5 @@
 const { promisify } = require("util");
 const crypto = require("crypto");
-
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/userModel");
@@ -23,7 +22,7 @@ const sendResWithToken = ({ res, user, jsonData = {}, statusCode = 200 }) => {
 
   if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
 
-  res.cookie("jwt", token, cookieOptions);
+  res.cookie("jwt", `Bearer ${token}`, cookieOptions);
 
   res.status(statusCode).json({ ...jsonData, token, status: "success" });
 };
@@ -105,6 +104,39 @@ exports.protect = catchAsyncError(async (req, res, next) => {
     );
 
   req.user = user;
+  next();
+});
+
+exports.isViewClientLoggedIn = catchAsyncError(async (req, res, next) => {
+  const jwtCookie = req.cookies.jwt;
+  let token = "";
+
+  if (jwtCookie) {
+    // 1. check for auth header
+    if (
+      jwtCookie &&
+      jwtCookie.startsWith("Bearer") &&
+      jwtCookie.split(" ")[1]
+    ) {
+      // eslint-disable-next-line prefer-destructuring
+      token = jwtCookie.split(" ")[1];
+    } else return next();
+
+    // 2. Verify the token.
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+    // 3. check if user still exists
+    const user = await User.findById(decoded.id);
+
+    if (!user) return next();
+
+    // 4. check if user changed the password after token was issued.
+    if (user.passChangedAfterToken(decoded.iat)) return next();
+
+    // mutating the locals property passes the variable to the susequent (pug) template where we can access it.
+    res.locals.user = user;
+  }
+
   next();
 });
 
