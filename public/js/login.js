@@ -11,10 +11,8 @@ if (form) {
       });
 
       alert(res.data.message);
-      setTimeout(() => {
-        // window;
-      }, 1500);
-      console.log("DONE", res);
+      // navigate the user to home route
+      location.assign("/");
     } catch (error) {
       alert(
         error.response.data.message ||
