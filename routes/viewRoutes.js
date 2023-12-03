@@ -8,8 +8,21 @@ const router = express.Router();
 
 router.use(authController.isViewClientLoggedIn);
 
-router.get("/", viewController.getOverview);
-router.get("/tour/:slug", viewController.getTour);
-router.get("/login", viewController.userLogin);
+router.get(
+  "/",
+  authController.isViewClientLoggedIn,
+  viewController.getOverview
+);
+router.get(
+  "/tour/:slug",
+  authController.isViewClientLoggedIn,
+  viewController.getTour
+);
+router.get(
+  "/login",
+  authController.isViewClientLoggedIn,
+  viewController.userLogin
+);
+router.get("/me", authController.protect, viewController.getAccount);
 
 module.exports = router;

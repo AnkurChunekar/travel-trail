@@ -31,3 +31,9 @@ exports.userLogin = catchAsyncError(async (_, res) => {
 exports.userSignup = catchAsyncError(async (_, res) => {
   res.status(200).render("login", { title: "Create an account" });
 });
+
+exports.getAccount = catchAsyncError(async (_, res) => {
+  res.status(200).render("account", {
+    title: "My Account"
+  });
+});
