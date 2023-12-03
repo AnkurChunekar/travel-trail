@@ -15,22 +15,10 @@ exports.getTour = catchAsyncError(async (req, res) => {
     fields: "review rating user"
   });
 
-  res.setHeader(
-    "Content-Security-Policy",
-    "script-src  'self' unpkg.com",
-    "script-src-elem 'self' unpkg.com"
-  );
-
   res.status(200).render("tour", { title: `${tour.name} Tour`, tour });
 });
 
 exports.userLogin = catchAsyncError(async (_, res) => {
-  res.setHeader(
-    "Content-Security-Policy",
-    "script-src  'self' unpkg.com",
-    "script-src-elem 'self' unpkg.com"
-  );
-
   res.status(200).render("login", { title: "Log into your account" });
 });
 
