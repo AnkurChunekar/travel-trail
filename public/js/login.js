@@ -1,5 +1,6 @@
 /* eslint-disable */
 import axios from "axios";
+import { showAlert } from "./alerts";
 
 export const userLogin = async (email, password) => {
   try {
@@ -9,11 +10,12 @@ export const userLogin = async (email, password) => {
       data: { email, password }
     });
 
-    alert(res.data.message);
+    showAlert("success", res.data.message);
     // navigate the user to home route
     location.assign("/");
   } catch (error) {
-    alert(
+    showAlert(
+      "error",
       error.response.data.message ||
         "Something went wrong, please try again later!"
     );
