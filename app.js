@@ -37,7 +37,7 @@ app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 
 //  SECURITY HTTP HEADERS
-app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false }));
 
 // LOGGER
 if (process.env.NODE_ENV === "development") {
