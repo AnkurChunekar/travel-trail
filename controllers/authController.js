@@ -279,3 +279,13 @@ exports.updatePassword = catchAsyncError(async (req, res, next) => {
     res
   });
 });
+
+exports.logout = catchAsyncError(async (_, res) => {
+  res.cookie("jwt", "logout", {
+    httpOnly: true
+  });
+
+  res
+    .status(200)
+    .json({ message: "User logged out successfully", status: "success" });
+});
