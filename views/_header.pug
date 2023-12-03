@@ -7,7 +7,7 @@ header.header
 
   nav.nav.nav--user
     if user
-      a.nav__el(href='#') Log out
+      a#logout.nav__el(href='#') Log out
       a.nav__el(href='#')
         - const usersName = user.name.split(' ')[0];
         img.nav__user-img(src=`/img/users/${user.photo}` alt=`${usersName}'s photo`)
