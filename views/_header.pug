@@ -10,7 +10,7 @@ header.header
       a.nav__el(href='#') Log out
       a.nav__el(href='#')
         - const usersName = user.name.split(' ')[0];
-        img.nav__user-img(src=`img/users/${user.photo}` alt=`${usersName}'s photo`)
+        img.nav__user-img(src=`/img/users/${user.photo}` alt=`${usersName}'s photo`)
         span= user.name.split(' ')[0]
     else
       a.nav__el.nav__el--cta(href="/login") Log in
