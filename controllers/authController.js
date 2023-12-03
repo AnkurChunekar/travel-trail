@@ -107,38 +107,44 @@ exports.protect = catchAsyncError(async (req, res, next) => {
   next();
 });
 
-exports.isViewClientLoggedIn = catchAsyncError(async (req, res, next) => {
-  const jwtCookie = req.cookies.jwt;
-  let token = "";
+exports.isViewClientLoggedIn = async (req, res, next) => {
+  try {
+    const jwtCookie = req.cookies.jwt;
+    let token = "";
 
-  if (jwtCookie) {
-    // 1. check for auth header
-    if (
-      jwtCookie &&
-      jwtCookie.startsWith("Bearer") &&
-      jwtCookie.split(" ")[1]
-    ) {
-      // eslint-disable-next-line prefer-destructuring
-      token = jwtCookie.split(" ")[1];
-    } else return next();
+    if (jwtCookie) {
+      // 1. check for auth header
+      if (
+        jwtCookie &&
+        jwtCookie.startsWith("Bearer") &&
+        jwtCookie.split(" ")[1]
+      ) {
+        // eslint-disable-next-line prefer-destructuring
+        token = jwtCookie.split(" ")[1];
+      } else return next();
 
-    // 2. Verify the token.
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+      // 2. Verify the token.
+      const decoded = await promisify(jwt.verify)(
+        token,
+        process.env.JWT_SECRET
+      );
 
-    // 3. check if user still exists
-    const user = await User.findById(decoded.id);
+      // 3. check if user still exists
+      const user = await User.findById(decoded.id);
 
-    if (!user) return next();
+      if (!user) return next();
 
-    // 4. check if user changed the password after token was issued.
-    if (user.passChangedAfterToken(decoded.iat)) return next();
+      // 4. check if user changed the password after token was issued.
+      if (user.passChangedAfterToken(decoded.iat)) return next();
 
-    // mutating the locals property passes the variable to the susequent (pug) template where we can access it.
-    res.locals.user = user;
+      // mutating the locals property passes the variable to the susequent (pug) template where we can access it.
+      res.locals.user = user;
+    }
+  } catch (error) {
+    console.log(error);
   }
-
   next();
-});
+};
 
 exports.restrictTo =
   (...roles) =>
