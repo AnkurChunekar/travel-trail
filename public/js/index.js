@@ -1,10 +1,11 @@
 /* eslint-disable */
-import { userLogin } from "./login";
+import { userLogin, userLogout } from "./login";
 import { enableMap } from "./mapbox";
 
 // DOM ELEMENTS
 const form = document.querySelector("#form");
-const mapEl = document.getElementById("map");
+const mapEl = document.querySelector("#map");
+const logoutEl = document.querySelector("#logout");
 
 if (form) {
   form.addEventListener("submit", (e) => {
@@ -19,4 +20,8 @@ if (form) {
 
 if (mapEl) {
   enableMap(mapEl);
+}
+
+if (logoutEl) {
+  logoutEl.addEventListener("click", userLogout);
 }
