@@ -84,6 +84,9 @@ exports.protect = catchAsyncError(async (req, res, next) => {
   ) {
     // eslint-disable-next-line prefer-destructuring
     token = authHeader.split(" ")[1];
+  } else if (req.cookies.jwt) {
+    // eslint-disable-next-line prefer-destructuring
+    token = req.cookies.jwt.split(" ")[1];
   } else next(new CustomError("Token not provided, please login again.", 401));
 
   // 2. Verify the token.
@@ -104,6 +107,7 @@ exports.protect = catchAsyncError(async (req, res, next) => {
     );
 
   req.user = user;
+  res.locals.user = user;
   next();
 });
 
