@@ -1,9 +1,11 @@
 /* eslint-disable */
 import { userLogin, userLogout } from "./login";
+import { updateUserSettings } from "./updateUserSettings";
 import { enableMap } from "./mapbox";
 
 // DOM ELEMENTS
 const loginForm = document.querySelector(".form.form--login");
+const userDataForm = document.querySelector(".form.form-user-data");
 const mapEl = document.querySelector("#map");
 const logoutEl = document.querySelector("#logout");
 
@@ -24,4 +26,14 @@ if (mapEl) {
 
 if (logoutEl) {
   logoutEl.addEventListener("click", userLogout);
+}
+
+if (userDataForm) {
+  userDataForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(userDataForm);
+    const data = { email: formData.get("email"), name: formData.get("name") };
+    updateUserSettings(data);
+  });
 }
