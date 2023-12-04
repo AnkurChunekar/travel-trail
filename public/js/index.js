@@ -2,10 +2,12 @@
 import { userLogin, userLogout } from "./login";
 import { updateUserSettings } from "./updateUserSettings";
 import { enableMap } from "./mapbox";
+import { showAlert } from "./alerts";
 
 // DOM ELEMENTS
 const loginForm = document.querySelector(".form.form--login");
 const userDataForm = document.querySelector(".form.form-user-data");
+const userPasswordForm = document.querySelector(".form.form-user-password");
 const mapEl = document.querySelector("#map");
 const logoutEl = document.querySelector("#logout");
 
@@ -35,5 +37,22 @@ if (userDataForm) {
     const formData = new FormData(userDataForm);
     const data = { email: formData.get("email"), name: formData.get("name") };
     updateUserSettings(data);
+  });
+}
+
+if (userPasswordForm) {
+  userPasswordForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const password = document.querySelector("#password");
+    const passwordCurrent = document.querySelector("#password-current");
+    const passwordConfirm = document.querySelector("#password-confirm");
+
+    const data = {
+      password: passwordCurrent.value,
+      newPassword: password.value,
+      confirmNewPassword: passwordConfirm.value
+    };
+    updateUserSettings(data, true);
   });
 }
