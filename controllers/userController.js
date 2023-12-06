@@ -4,6 +4,8 @@ const CustomError = require("../utils/customError");
 const factory = require("./handlerFactory");
 
 exports.updateMe = catchAsyncError(async (req, res, next) => {
+  console.log(1, req.file);
+  console.log(2, req.body);
   if (req.body.password || req.body.confirmPassword)
     return next(
       new CustomError(
