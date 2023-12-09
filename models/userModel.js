@@ -26,7 +26,7 @@ const userSchema = mongoose.Schema({
     }
   },
   name: { type: String, required: [true, "Please provide your name"] },
-  photo: String,
+  photo: { type: String, default: "default.jpg" },
   password: {
     type: String,
     required: [true, "Please provide your password"],
