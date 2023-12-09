@@ -35,8 +35,9 @@ if (userDataForm) {
     e.preventDefault();
 
     const formData = new FormData(userDataForm);
-    const data = { email: formData.get("email"), name: formData.get("name") };
-    updateUserSettings(data);
+
+    console.log(formData.get("photo"));
+    updateUserSettings(formData);
   });
 }
 

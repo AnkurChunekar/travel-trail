@@ -14,6 +14,8 @@ export const updateUserSettings = async (data, isPasswordUpdate = false) => {
       "success",
       `${isPasswordUpdate ? "Password" : "Data"} Updated Successfully!`
     );
+
+    if (!isPasswordUpdate) window.location.reload();
   } catch (error) {
     showAlert(
       "error",
