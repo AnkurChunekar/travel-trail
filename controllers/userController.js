@@ -26,7 +26,6 @@ const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
 exports.uploadUserPhoto = upload.single("photo");
 
 exports.updateMe = catchAsyncError(async (req, res, next) => {
-  // console.log(1, req.file);
   if (req.body.password || req.body.confirmPassword)
     return next(
       new CustomError(
@@ -35,14 +34,13 @@ exports.updateMe = catchAsyncError(async (req, res, next) => {
       )
     );
 
-  const { email, name } = req.body;
+  const body = { email: req.body.email, name: req.body.name };
+  if (req.file) body.photo = req.file.filename;
+
   const user = await User.findByIdAndUpdate(
     // eslint-disable-next-line no-underscore-dangle
     req.user._id,
-    {
-      email,
-      name
-    },
+    body,
     { runValidators: true, new: true }
   );
 
