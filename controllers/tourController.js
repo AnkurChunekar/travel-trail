@@ -1,5 +1,6 @@
+/* eslint-disable no-await-in-loop */
 const multer = require("multer");
-// const Jimp = require("jimp");
+const Jimp = require("jimp");
 
 const Tour = require("../models/tourModel");
 const catchAsyncError = require("../utils/catchAsyncError");
@@ -16,12 +17,38 @@ const multerFilter = (req, file, cb) => {
 const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
 
 exports.uploadTourImages = upload.fields([
-  { name: "coverImage", maxCount: 1 },
+  { name: "imageCover", maxCount: 1 },
   { name: "images", maxCount: 3 }
 ]);
 
 exports.resizeTourImages = catchAsyncError(async (req, res, next) => {
+  if (!req.files.imageCover || !req.files.images) return next();
   console.log(req.files);
+  req.body.imageCover = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
+
+  // 1) Process image cover
+  const image = await Jimp.read(req.files.imageCover[0].buffer);
+  await image
+    .cover(2000, 1333) // resize the image to 3:2 ratio˝
+    .quality(90) // set the quality of JPEG
+    .writeAsync(`public/img/tours/${req.body.imageCover}`); // save as JPEG
+
+  // 2) Process other images
+  req.body.images = [];
+
+  for (let i = 0; i < req.files.images.length; i += 1) {
+    const file = req.files.images[i];
+    const imageName = `tour-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
+
+    const processedImage = await Jimp.read(file.buffer);
+    await processedImage
+      .cover(2000, 1333)
+      .quality(90)
+      .writeAsync(`public/img/tours/${imageName}`);
+
+    req.body.images.push(imageName);
+  }
+
   next();
 });
 
