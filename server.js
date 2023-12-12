@@ -5,7 +5,7 @@ require("dotenv").config();
 const initializeDbConnection = require("./db/db.connect");
 const app = require("./app");
 
-const PORT = 3000;
+const PORT = 3050;
 
 process.on("uncaughtException", (err) => {
   console.error("Global error", err.name, err.message);

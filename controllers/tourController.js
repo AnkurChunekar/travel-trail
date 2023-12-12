@@ -1,9 +1,32 @@
+const multer = require("multer");
+// const Jimp = require("jimp");
+
 const Tour = require("../models/tourModel");
-// const APIQueryFeatures = require("../utils/apiQueryFeatures");
 const catchAsyncError = require("../utils/catchAsyncError");
 const CustomError = require("../utils/customError");
-// const CustomError = require("../utils/customError");
 const factory = require("./handlerFactory");
+
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image")) cb(null, true);
+  else cb(new CustomError("Only image uploads are allowed", 400));
+};
+
+const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+
+exports.uploadTourImages = upload.fields([
+  { name: "coverImage", maxCount: 1 },
+  { name: "images", maxCount: 3 }
+]);
+
+exports.resizeTourImages = catchAsyncError(async (req, res, next) => {
+  console.log(req.files);
+  next();
+});
+
+// incase of only images property with maxCount we can use the below array
+// upload.array('images', 3)
 
 exports.getTop5AffordableQuery = async (req, res, next) => {
   req.query = {
