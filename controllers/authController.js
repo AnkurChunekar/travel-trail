@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const catchAsyncError = require("../utils/catchAsyncError");
 const CustomError = require("../utils/customError");
-const sendEmail = require("../utils/email");
+const Email = require("../utils/email");
 
 const sendResWithToken = ({ res, user, jsonData = {}, statusCode = 200 }) => {
   // eslint-disable-next-line no-underscore-dangle
@@ -36,6 +36,10 @@ exports.signup = catchAsyncError(async (req, res, next) => {
     );
 
   const user = await User.create({ email, name, photo, password });
+
+  const url = `${req.protocol}://${req.get("host")}/me`;
+  await new Email(user, url).sendWelcome();
+
   sendResWithToken({
     statusCode: 201,
     jsonData: {
@@ -178,11 +182,11 @@ exports.forgotPassword = catchAsyncError(async (req, res, next) => {
 
     console.log({ new: resetUrl });
 
-    await sendEmail({
-      message: `Forgot your password? Please send a PATCH request on the following url: ${resetUrl}`,
-      email: user.email,
-      subject: "TravelTrail: Reset Password (Valid for 10 mins)"
-    });
+    // await sendEmail({
+    //   message: `Forgot your password? Please send a PATCH request on the following url: ${resetUrl}`,
+    //   email: user.email,
+    //   subject: "TravelTrail: Reset Password (Valid for 10 mins)"
+    // });
 
     res.status(200).json({
       status: "success",
