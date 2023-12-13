@@ -31,7 +31,7 @@ module.exports = class Email {
 
   async send(template, subject) {
     const html = pug.renderFile(
-      path.join(__dirname, `/views/emails/${template}.pug`),
+      path.join(__dirname, `/../views/email/${template}.pug`),
       {
         firstName: this.firstName,
         url: this.url,
@@ -47,7 +47,7 @@ module.exports = class Email {
       text: htmlToText(html)
     };
 
-    await this.createNewTransport().sendMail(mailOptions);
+    await this.constructor.createNewTransport().sendMail(mailOptions);
   }
 
   async sendWelcome() {
