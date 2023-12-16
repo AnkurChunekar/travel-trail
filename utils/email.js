@@ -12,9 +12,10 @@ module.exports = class Email {
   }
 
   static createNewTransport() {
-    if (process.env.NODE_ENV === "production") {
-      return "create a production transporter";
-    }
+    // TODO: INTEGRATE PRODUCTION EMAIL SERVICE HERE (EG. SENDGRID)
+    // if (process.env.NODE_ENV === "production") {
+    //   return "create a production transporter";
+    // }
 
     const { EMAIL_USERNAME, EMAIL_PASSWORD, EMAIL_HOST, EMAIL_PORT } =
       process.env;
