@@ -180,13 +180,7 @@ exports.forgotPassword = catchAsyncError(async (req, res, next) => {
       "host"
     )}/api/v1/users/resetPassword/${resetToken}`;
 
-    console.log({ new: resetUrl });
-
-    // await sendEmail({
-    //   message: `Forgot your password? Please send a PATCH request on the following url: ${resetUrl}`,
-    //   email: user.email,
-    //   subject: "TravelTrail: Reset Password (Valid for 10 mins)"
-    // });
+    await new Email(user, resetUrl).sendPasswordReset();
 
     res.status(200).json({
       status: "success",
