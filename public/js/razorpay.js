@@ -11,18 +11,26 @@ const bookTour = async (tourId) => {
     const { order, image, userName, userEmail } = res.data;
 
     // 2) Checkout and complete payment
-    const successHandler = (response) => {
-      // handle success case here
-      // sample response
-      //   {
-      //     "razorpay_payment_id": "pay_NE6dPIN2PxCk50",
-      //     "razorpay_order_id": "order_NE6d9hZ8AQoeKC",
-      //     "razorpay_signature": "a876a955a2e032e730f0e666f4ecebebe0ef161bd9b70b0d9abef67c7eb139e8"
-      // }
-      showAlert("success", "Payment successfull!");
-      setTimeout(() => {
-        // window.location.href = window.location.origin;
-      }, 1000);
+    const successHandler = async (response) => {
+      try {
+        await axios.post(
+          `${window.location.origin}/api/v1/bookings/verify-payment`,
+          {
+            orderId: response.razorpay_order_id,
+            paymentId: response.razorpay_payment_id,
+            signiture: response.razorpay_signature,
+            tourId,
+            price: Number(order.amount) / 100
+          }
+        );
+
+        showAlert("success", "Payment successfull!");
+        setTimeout(() => {
+          window.location.href = window.location.origin;
+        }, 1000);
+      } catch (error) {
+        showAlert("error", error.data.message);
+      }
     };
 
     const options = {
