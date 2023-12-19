@@ -1,6 +1,10 @@
 const Razorpay = require("razorpay");
+const {
+  validatePaymentVerification
+} = require("razorpay/dist/utils/razorpay-utils");
 
 const Tour = require("../models/tourModel");
+const Booking = require("../models/bookingModel");
 const catchAsyncError = require("../utils/catchAsyncError");
 const CustomError = require("../utils/customError");
 
@@ -43,3 +47,33 @@ exports.getCheckoutSession = catchAsyncError(async (req, res, next) => {
     }
   });
 });
+
+exports.verifyPaymentAndCreateBooking = catchAsyncError(
+  async (req, res, next) => {
+    try {
+      const { orderId, paymentId, signiture, tourId, price } = req.body;
+
+      // Validate the payment
+      const isValid = validatePaymentVerification(
+        { order_id: orderId, payment_id: paymentId },
+        signiture,
+        process.env.RAZORPAY_SECRET
+      );
+
+      if (!isValid)
+        return next(new CustomError("Inavlid Payment, please try again", 403));
+
+      // Create a booking
+      await Booking.create({
+        tour: tourId,
+        user: req.user.id,
+        price
+      });
+
+      // Send appropriate response
+      res.json({ status: "success", message: "Tour Booked Successfully" });
+    } catch (error) {
+      next(new CustomError("Inavlid Payment, please try again", 403));
+    }
+  }
+);
