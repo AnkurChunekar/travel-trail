@@ -2,6 +2,7 @@
 import { userLogin, userLogout } from "./login";
 import { updateUserSettings } from "./updateUserSettings";
 import { enableMap } from "./mapbox";
+import { bookTour } from "./razorpay";
 import { showAlert } from "./alerts";
 
 // DOM ELEMENTS
@@ -10,6 +11,7 @@ const userDataForm = document.querySelector(".form.form-user-data");
 const userPasswordForm = document.querySelector(".form.form-user-password");
 const mapEl = document.querySelector("#map");
 const logoutEl = document.querySelector("#logout");
+const bookTourBtn = document.querySelector("#book-tour");
 
 if (loginForm) {
   loginForm.addEventListener("submit", (e) => {
@@ -55,5 +57,11 @@ if (userPasswordForm) {
       confirmNewPassword: passwordConfirm.value
     };
     updateUserSettings(data, true);
+  });
+}
+
+if (bookTourBtn) {
+  bookTourBtn.addEventListener("click", (e) => {
+    bookTour(bookTourBtn.dataset.tourId);
   });
 }
