@@ -1,4 +1,4 @@
-header.header
+header#header.header.bg-blur
   nav.nav.nav--tours 
     a.nav__el(href='/') Home 
 
@@ -13,5 +13,5 @@ header.header
         img.nav__user-img(src=`/img/users/${user.photo}` alt=`${usersName}'s photo`)
         span= user.name.split(' ')[0]
     else
+      a.nav__el.nav__el--secondary(href="#") Register
       a.nav__el.nav__el--cta(href="/login") Log in
-      a.nav__el.nav__el--cta(href="#") Sign up
