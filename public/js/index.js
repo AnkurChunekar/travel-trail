@@ -12,6 +12,7 @@ const userPasswordForm = document.querySelector(".form.form-user-password");
 const mapEl = document.querySelector("#map");
 const logoutEl = document.querySelector("#logout");
 const bookTourBtn = document.querySelector("#book-tour");
+const header = document.querySelector("#header");
 
 if (loginForm) {
   loginForm.addEventListener("submit", (e) => {
@@ -64,4 +65,20 @@ if (bookTourBtn) {
   bookTourBtn.addEventListener("click", (e) => {
     bookTour(bookTourBtn.dataset.tourId);
   });
+}
+
+if (header) {
+  const scrollHeightThreshold = 500;
+  function handleScroll() {
+    // Check if the current scroll position is beyond the threshold
+    if (window.scrollY > scrollHeightThreshold) {
+      // Add a class to the header when scrolled
+      header.classList.remove("bg-blur");
+    } else {
+      // Remove the class when not scrolled
+      header.classList.add("bg-blur");
+    }
+  }
+
+  window.addEventListener("scroll", handleScroll);
 }
