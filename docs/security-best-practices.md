@@ -17,7 +17,7 @@
 - Store jwts in HTTPonly cookies
 - set special HTTP headers (helmet package)
 
-- Some headers found (not pointed out by jonas)
+- Some headers found (not pointed while learning)
 - Set the following security headers on all responses from your application:
   - Strict-Transport-Security (HSTS)
   - Content-Security-Policy (CSP)
