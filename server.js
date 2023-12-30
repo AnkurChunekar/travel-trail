@@ -5,8 +5,6 @@ require("dotenv").config();
 const initializeDbConnection = require("./db/db.connect");
 const app = require("./app");
 
-const PORT = 3050;
-
 process.on("uncaughtException", (err) => {
   console.error("Global error", err.name, err.message);
   console.error("Unhandled exception, Shutting down 🔥");
@@ -15,8 +13,8 @@ process.on("uncaughtException", (err) => {
 
 initializeDbConnection();
 
-const server = app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+const server = app.listen(process.env.PORT, () => {
+  console.log(`Server listening on port ${process.env.PORT}`);
 });
 
 process.on("unhandledRejection", (err) => {
