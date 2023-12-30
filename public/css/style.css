@@ -1349,10 +1349,9 @@ footer .copyright .shoutout a {
   text-decoration: none;
 }
 
-.btn__cta {
+.btn__cta,
+.btn__cta-secondary {
   padding: 1.5rem 3rem;
-  background-color: var(--brand-color-medium);
-  color: white;
   font-weight: 400;
   cursor: pointer;
   display: block;
@@ -1364,8 +1363,20 @@ footer .copyright .shoutout a {
   will-change: transform;
 }
 
+.btn__cta,
+.btn__cta-secondary:hover {
+  background-color: var(--brand-color-medium);
+  color: white;
+}
+
 .btn__cta:hover {
   transform: translateY(-4px);
+}
+
+.btn__cta-secondary {
+  background-color: transparent;
+  color: var(--brand-color-medium);
+  border: solid 1px var(--brand-color-medium);
 }
 
 .btn__primary:hover {

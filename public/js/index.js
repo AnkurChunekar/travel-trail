@@ -19,7 +19,14 @@ const SELECTORS = {
   logoutEl: "#logout",
   bookTourBtn: "#book-tour",
   header: "#header",
-  useGuestCreds: "use-guest-creds"
+  useGuestCreds: "#use-guest-creds",
+  email: "#email",
+  password: "#password"
+};
+
+const GUEST_USER = {
+  email: "admin@natours.io",
+  password: "test1234"
 };
 
 // DOM ELEMENTS
@@ -42,6 +49,18 @@ if (loginForm) {
     // formdata gets modified by the formdata event
     userLogin(formData.get("email"), formData.get("password"));
   });
+
+  // if user wants to use guest creds
+  if (guestCredsBtn) {
+    const emailInput = document.querySelector(SELECTORS.email);
+    const passInput = document.querySelector(SELECTORS.password);
+    guestCredsBtn.addEventListener("click", () => {
+      emailInput.value = "guest@example.com";
+      passInput.value = "12345678";
+
+      userLogin(GUEST_USER.email, GUEST_USER.password);
+    });
+  }
 }
 
 if (mapEl) {
