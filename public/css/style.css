@@ -327,17 +327,20 @@ body {
     flex-direction: column;
   }
 }
-.header__logo img {
-  height: 3.5rem;
+.header__logo {
+  font-family: var(--font-serif);
+  font-size: 2vw;
+  color: white;
+  font-weight: 400;
 }
-@media only screen and (max-width: 62.5em) {
+/* @media only screen and (max-width: 62.5em) {
   .header__logo {
     -webkit-box-ordinal-group: 0;
     -ms-flex-order: -1;
     order: -1;
     margin-bottom: 1.5rem;
   }
-}
+} */
 
 .section-header {
   position: relative;
