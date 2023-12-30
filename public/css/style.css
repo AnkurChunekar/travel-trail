@@ -848,13 +848,13 @@ body {
   max-width: 120rem;
   margin: 0 auto;
   min-height: 100vh;
-  border-radius: 3px;
   overflow: hidden;
   -webkit-box-shadow: 0 2.5rem 8rem 2rem rgba(0, 0, 0, 0.07);
   box-shadow: 0 2.5rem 8rem 2rem rgba(0, 0, 0, 0.07);
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  margin-top: 4rem;
 }
 .user-view__menu {
   -webkit-box-flex: 32rem;
@@ -864,10 +864,14 @@ body {
     linear,
     left top,
     right bottom,
-    from(#7dd56f),
-    to(#28b487)
+    from(var(--brand-color-medium)),
+    to(#917b11)
   );
-  background-image: linear-gradient(to right bottom, #7dd56f, #28b487);
+  background-image: linear-gradient(
+    to left,
+    var(--brand-color-medium),
+    #917b11
+  );
   padding: 4rem 0;
 }
 .user-view__content {
@@ -1358,6 +1362,25 @@ footer .copyright .shoutout a {
   text-decoration: none;
 }
 
+.btn__cta {
+  padding: 1.5rem 3rem;
+  background-color: var(--brand-color-medium);
+  color: white;
+  font-weight: 400;
+  cursor: pointer;
+  display: block;
+  text-align: center;
+  font-size: 1.5rem;
+  text-decoration: none;
+  border: none;
+  transition: transform ease 0.3s;
+  will-change: transform;
+}
+
+.btn__cta:hover {
+  transform: translateY(-4px);
+}
+
 .btn__primary:hover {
   color: white;
   background-color: var(--brand-color-medium);
@@ -1433,13 +1456,13 @@ footer .copyright .shoutout a {
 }
 
 .error {
-  position: absolute;
-  top: 35%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  max-width: 80rem;
+  height: 35rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
+  margin-top: 4rem;
 }
 .error__title {
   display: -webkit-box;
@@ -1465,13 +1488,22 @@ footer .copyright .shoutout a {
 }
 
 .login-form {
-  margin: 0 auto;
+  margin: 10rem auto 2rem auto;
   max-width: 55rem;
   background-color: #fff;
   -webkit-box-shadow: 0 2.5rem 8rem 2rem rgba(0, 0, 0, 0.06);
   box-shadow: 0 2.5rem 8rem 2rem rgba(0, 0, 0, 0.06);
   padding: 5rem 7rem;
   border-radius: 5px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form .form__group.right {
+  margin-left: auto;
 }
 
 .form__input {
@@ -1488,7 +1520,6 @@ footer .copyright .shoutout a {
   border-bottom: 3px solid transparent;
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
-  border-radius: 4px;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   /* Pseudo element (a visible thing that isn't really in the DOM).
@@ -1543,22 +1574,22 @@ footer .copyright .shoutout a {
 }
 
 .form__upload:focus + label {
-  outline: 3px solid #55c57a;
+  outline: 3px solid var(--brand-color-medium);
   outline-offset: 3px;
 }
 
 .form__upload + label {
-  color: #55c57a;
+  color: var(--brand-color-medium);
   display: inline-block;
   text-decoration: none;
-  border-bottom: 1px solid #55c57a;
+  border-bottom: 1px solid var(--brand-color-medium);
   padding: 3px;
   -webkit-transition: all 0.2s;
   transition: all 0.2s;
   cursor: pointer;
 }
 .form__upload + label:hover {
-  background-color: #55c57a;
+  background-color: var(--brand-color-medium);
   color: #fff;
   -webkit-box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
