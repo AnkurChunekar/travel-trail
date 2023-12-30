@@ -5,6 +5,12 @@ import { enableMap } from "./mapbox";
 import { bookTour } from "./razorpay";
 import { showAlert } from "./alerts";
 
+// constants
+const BLURRED_HEADER_PATHS = {
+  "/me": true,
+  "/login": true
+};
+
 // DOM ELEMENTS
 const loginForm = document.querySelector(".form.form--login");
 const userDataForm = document.querySelector(".form.form-user-data");
@@ -69,16 +75,24 @@ if (bookTourBtn) {
 
 if (header) {
   const scrollHeightThreshold = 500;
-  function handleScroll() {
-    // Check if the current scroll position is beyond the threshold
-    if (window.scrollY > scrollHeightThreshold) {
-      // Add a class to the header when scrolled
-      header.classList.remove("bg-blur");
-    } else {
-      // Remove the class when not scrolled
-      header.classList.add("bg-blur");
-    }
-  }
 
-  window.addEventListener("scroll", handleScroll);
+  // do not blur the header & add a listener on paths such as /me, /login, /signup, etc
+  if (BLURRED_HEADER_PATHS[window.location.pathname]) {
+    header.classList.remove("bg-blur");
+  } else {
+    // add the listener here
+    header.classList.add("bg-blur");
+
+    function handleScroll() {
+      // Check if the current scroll position is beyond the threshold
+      if (window.scrollY > scrollHeightThreshold) {
+        // Add a class to the header when scrolled
+        header.classList.remove("bg-blur");
+      } else {
+        // Remove the class when not scrolled
+        header.classList.add("bg-blur");
+      }
+    }
+    window.addEventListener("scroll", handleScroll);
+  }
 }
