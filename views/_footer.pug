@@ -1,16 +1,19 @@
 footer.padding_4x
+  - console.log(user);
   .flex
     section.flex-content.padding_1x
       h3 Top Products
       a(href='/#') Home
-      a(href='/me') Account
       a(href='/#main') View Tours
-      a(href='/me') Bookings
+      if user
+        a(href='/me') Account
+        a(href='/me') Bookings
     section.flex-content.padding_1x
       h3 Quick Links
-      a(href='/me') Account
       a(href='/#') Home
       a(href='/#main') View Tours
+      if user
+        a(href='/me') Account
     section.flex-content.padding_1x
       h3 Resources
       a(href='https://unsplash.com/s/photos/travel?license=free&orientation=landscape' target="_blank") Images Used From
