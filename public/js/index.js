@@ -11,14 +11,27 @@ const BLURRED_HEADER_PATHS = {
   "/login": true
 };
 
+const SELECTORS = {
+  loginForm: ".form.form--login",
+  userDataForm: ".form.form-user-data",
+  userPasswordForm: ".form.form-user-password",
+  mapEl: "#map",
+  logoutEl: "#logout",
+  bookTourBtn: "#book-tour",
+  header: "#header",
+  useGuestCreds: "use-guest-creds"
+};
+
 // DOM ELEMENTS
-const loginForm = document.querySelector(".form.form--login");
-const userDataForm = document.querySelector(".form.form-user-data");
-const userPasswordForm = document.querySelector(".form.form-user-password");
-const mapEl = document.querySelector("#map");
-const logoutEl = document.querySelector("#logout");
-const bookTourBtn = document.querySelector("#book-tour");
-const header = document.querySelector("#header");
+
+const loginForm = document.querySelector(SELECTORS.loginForm);
+const userDataForm = document.querySelector(SELECTORS.userDataForm);
+const userPasswordForm = document.querySelector(SELECTORS.userPasswordForm);
+const mapEl = document.querySelector(SELECTORS.mapEl);
+const logoutEl = document.querySelector(SELECTORS.logoutEl);
+const bookTourBtn = document.querySelector(SELECTORS.bookTourBtn);
+const header = document.querySelector(SELECTORS.header);
+const guestCredsBtn = document.querySelector(SELECTORS.useGuestCreds);
 
 if (loginForm) {
   loginForm.addEventListener("submit", (e) => {
