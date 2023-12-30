@@ -160,18 +160,6 @@ body {
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
   font-family: var(--font-serif);
-  /* background-image: -webkit-gradient(
-    linear,
-    left top,
-    right bottom,
-    from(rgba(125, 213, 111, 0.85)),
-    to(rgba(40, 180, 135, 0.85))
-  );
-  background-image: linear-gradient(
-    to bottom right,
-    rgba(125, 213, 111, 0.85),
-    rgba(40, 180, 135, 0.85)
-  ); */
 }
 
 .heading-primary {
@@ -1094,7 +1082,6 @@ footer .copyright .shoutout a {
 }
 .nav__el--cta {
   padding: 1rem 3rem;
-  /* border-radius: 10rem; */
   border: 1px solid #b58f53 !important;
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
