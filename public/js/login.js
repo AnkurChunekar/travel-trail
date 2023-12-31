@@ -26,12 +26,10 @@ export const userLogin = async (email, password) => {
 
 export const userLogout = async () => {
   try {
-    console.log(1);
     const res = await axios({
       method: "post",
       url: "/api/v1/users/logout"
     });
-    console.log({ res });
 
     showAlert("success", "Logged out successfully!");
     // navigate the user to home route

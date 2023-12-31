@@ -23,7 +23,6 @@ exports.uploadTourImages = upload.fields([
 
 exports.resizeTourImages = catchAsyncError(async (req, res, next) => {
   if (!req.files.imageCover || !req.files.images) return next();
-  console.log(req.files);
   req.body.imageCover = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
 
   // 1) Process image cover
@@ -178,7 +177,6 @@ exports.getToursWithin = catchAsyncError(async (req, res, next) => {
   // divide the distance value by radius of Earth
   // mi -> miles km -> kilometers
   const radius = unit === "mi" ? distance / 3963.2 : distance / 6378.1;
-  console.log({ radius });
 
   const tours = await Tour.find({
     startLocation: {

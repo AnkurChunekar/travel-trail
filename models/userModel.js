@@ -49,7 +49,6 @@ const userSchema = mongoose.Schema({
 });
 
 userSchema.pre("save", async function userSchemaPre(next) {
-  console.log("Inside user model pre save middleware");
   // only run if password was modified or first time
   if (this.isModified("password")) {
     const salt = await bcrypt.genSalt(12);

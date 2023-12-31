@@ -77,7 +77,6 @@ if (userDataForm) {
 
     const formData = new FormData(userDataForm);
 
-    console.log(formData.get("photo"));
     updateUserSettings(formData);
   });
 }

@@ -81,10 +81,6 @@ reviewSchema.statics.calculateRatingsAverage = async function (tourId) {
         runValidators: true
       }
     );
-    console.log(
-      "Ratings average and count updated successfully",
-      calculatedData
-    );
   } catch (error) {
     console.error(
       "Error occured while updating ratings average and ratings count in tour document",

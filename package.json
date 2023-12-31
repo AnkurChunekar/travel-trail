@@ -24,6 +24,7 @@
   "dependencies": {
     "axios": "^1.6.2",
     "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
@@ -41,9 +42,9 @@
     "nodemailer": "^6.9.5",
     "pug": "^3.0.2",
     "razorpay": "^2.9.2",
-    "xss-clean": "^0.1.4",
     "webpack": "^5.89.0",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "xss-clean": "^0.1.4"
   },
   "devDependencies": {
     "eslint": "^8.46.0",
