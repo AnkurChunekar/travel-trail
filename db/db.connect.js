@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const initializeDbConnection = async () => {
+const initializeDbConnection = async (onSuccess) => {
   try {
     const { DB_USERNAME, DB_PASSWORD, DB_HOST, DB_NAME } = process.env;
     await mongoose.connect(
@@ -11,6 +11,7 @@ const initializeDbConnection = async () => {
       }
     );
     console.log("Successfully connected to DB!");
+    onSuccess();
   } catch (error) {
     console.log("Error occured while connecting to DB!");
     console.log(error.message);
