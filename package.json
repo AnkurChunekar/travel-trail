@@ -2,7 +2,7 @@
   "name": "travel-trail-main",
   "version": "1.0.0",
   "description": "Central repository for my travel trail Node.js app built using Express, MongoDB, Mongoose, etc. Server-side rendered application.",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npx webpack && nodemon server.js",
